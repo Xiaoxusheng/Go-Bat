@@ -18,13 +18,22 @@ import (
 
 type Message interface {
 	// 发送消息
+<<<<<<< HEAD
 	Send(MessageString *Data)
+=======
+	Send(MessageString Data)
+>>>>>>> e485db3 (初始化)
 	// 接收消息
 	receive(w http.ResponseWriter, r *http.Request)
 	//	开始监听消息
 	Start()
 	//	已读消息
 	read()
+<<<<<<< HEAD
+=======
+	//
+	Serve()
+>>>>>>> e485db3 (初始化)
 }
 
 type GoBat struct {
@@ -42,6 +51,14 @@ type Data struct {
 var once sync.Once
 var bat *GoBat
 var Mess config.Messages
+<<<<<<< HEAD
+=======
+var MessageChan = make(chan []byte, 100)
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  4096,
+	WriteBufferSize: 4096,
+}
+>>>>>>> e485db3 (初始化)
 
 func NewGoBat() *GoBat {
 	once.Do(func() {
@@ -68,11 +85,14 @@ func (b *GoBat) Send(d Data) {
 	defer resp.Body.Close()
 }
 
+<<<<<<< HEAD
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  4096,
 	WriteBufferSize: 4096,
 }
 
+=======
+>>>>>>> e485db3 (初始化)
 // websocket
 func (b *GoBat) receive(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -80,6 +100,7 @@ func (b *GoBat) receive(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+<<<<<<< HEAD
 	go func() {
 		for {
 			messageType, message, err := conn.ReadMessage()
@@ -104,6 +125,24 @@ func (b *GoBat) receive(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}()
+=======
+
+	for {
+		messageType, message, err := conn.ReadMessage()
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		if messageType == 1 {
+			MessageChan <- message
+			fmt.Println("送到通道")
+			if err != nil {
+				log.Panicln(err)
+			}
+
+		}
+	}
+>>>>>>> e485db3 (初始化)
 
 }
 
@@ -115,11 +154,44 @@ func (b *GoBat) Start() {
 	if err != nil {
 		log.Panicln(err)
 	}
+<<<<<<< HEAD
 	b.read()
 }
 
 func (b *GoBat) read() {
 	_, err := http.Get("http://127.0.0.1:5000/get_forward_msg?message_id" + strconv.FormatInt(Mess.Message_id, 10))
+=======
+}
+
+func (b *GoBat) Serve() {
+	Gobat := new(abstraction.GoBat)
+	for {
+		select {
+		case c := <-MessageChan:
+			// 如果chan1成功读到数据，则进行该case处理语句
+			err := json.Unmarshal(c, &Mess)
+			if err != nil {
+				log.Panicln(err)
+			}
+			fmt.Println("Mess", Mess)
+			if Mess.Message != "" {
+				b.read()
+				Gobat.SetStrategy(new(api.PrivateText))
+				fmt.Println(Gobat.Deal(Mess).(string))
+				b.Send(Data{User_id: Mess.User_id, Message: Gobat.Deal(Mess).(string), Auto_escape: false})
+				Mess = config.Messages{}
+				//b.Send(Data{User_id: Mess.User_id, Message: Mess.Message, Auto_escape: false})
+			}
+		default:
+			// 如果上面都没有成功，则进入default处理流程
+		}
+
+	}
+}
+
+func (b *GoBat) read() {
+	_, err := http.Get("http://127.0.0.1:5000/get_forward_msg?message_id=" + strconv.FormatInt(Mess.Message_id, 10))
+>>>>>>> e485db3 (初始化)
 	if err != nil {
 		log.Panicln(err)
 		return

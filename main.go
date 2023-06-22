@@ -7,6 +7,9 @@ import (
 func main() {
 	//初始化连接
 	GoBat := message.NewGoBat()
-	GoBat.Start()
+	//异步启动监听
+	go GoBat.Start()
+	//启动服务
+	GoBat.Serve()
 
 }
