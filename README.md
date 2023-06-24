@@ -91,6 +91,8 @@
            #模式
            mode:
              mode: "T"  #模式
+             bat: false #聊天机器人默认为关闭
+             recall : false  #防撤回默认为关闭
 
            #服务器
            serve:
