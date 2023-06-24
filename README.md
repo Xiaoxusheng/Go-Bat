@@ -8,6 +8,7 @@
 <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Xiaoxusheng/Go-Bat">
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Xiaoxusheng/Go-Bat">
 <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/Xiaoxusheng/Go-Bat">
+
 ### 1 功能如下
 - [x] 私聊
   - [x] 天气模式: (t)
