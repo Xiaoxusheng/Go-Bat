@@ -25,8 +25,7 @@ type Message interface {
 	Start()
 	//	已读消息
 	read()
-
-	//
+	// 服务
 	Serve()
 }
 
@@ -64,7 +63,7 @@ func (b *GoBat) Send(d Data) {
 	if err != nil {
 		panic(err)
 	}
-	resp, err := http.Post("http://127.0.0.1:5000/send_private_msg", "application/json", bytes.NewBuffer(marshal))
+	resp, err := http.Post("http://127.0.0.1:"+strconv.Itoa(config.K.Server.Port)+"/send_private_msg", "application/json", bytes.NewBuffer(marshal))
 	if err != nil {
 		panic(err)
 	}
@@ -130,7 +129,7 @@ func (b *GoBat) receive(w http.ResponseWriter, r *http.Request) {
 func (b *GoBat) Start() {
 	log.Printf("[INFO]: %v  %v  %v", b.name, b.version, "机器人启动")
 	http.HandleFunc("/", b.receive)
-	err := http.ListenAndServe(":5700", nil)
+	err := http.ListenAndServe(":"+strconv.Itoa(config.K.Server.Ws), nil)
 	if err != nil {
 		log.Panicln(err)
 	}

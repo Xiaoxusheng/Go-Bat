@@ -5,6 +5,7 @@ import (
 )
 
 func main() {
+
 	//初始化连接
 	GoBat := message.NewGoBat()
 	//异步启动监听
