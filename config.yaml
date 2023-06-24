@@ -1,0 +1,17 @@
+#redis
+redis:
+  password: "admin123"
+  addr: "116.198.44.154:6379"
+
+#模式
+mode:
+  mode: "T"
+
+#服务器
+serve:
+  port: 5000
+  addr: "116.198.44.154"
+  ws: 5700
+
+
+
