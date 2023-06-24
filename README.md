@@ -1,7 +1,7 @@
 ## GoBat
 
 ### 基于go-cqhttp与JavaScript 语言实现
-![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json)
+<img alt="Dynamic JSON Badge" src="https://img.shields.io/badge/dynamic/json">
 <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Xiaoxusheng/Go-Bat">
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Xiaoxusheng/Go-Bat">
 <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/Xiaoxusheng/Go-Bat">
@@ -24,7 +24,7 @@
   - [x] chatgpt画图功能 （画图 文字描述）
   - [x] 群机器人开关功能（机器人关闭，机器人关闭）
 
-### 2配置 config.yml
+### 2配置 go-cqhttp config.yml
 
 #### 1. 进入配置qq账号密码
 
@@ -71,9 +71,7 @@
 
 #### 6.结果
 
-![img.png](img/img.png)
-![img_1.png](img/img_1.png)
-![img_3.png](img/img_3.png)
+
 
 #### 6.说明：
 
