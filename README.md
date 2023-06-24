@@ -83,22 +83,20 @@
 
 ### 3.配置在config.ymal
 
-           #redis
-           redis:
-             password: "" #密码
-             addr: "127.0.0.1:6379"  #地址加端口
+    #redis
+    redis:
+      password: ""  #redis密码
+      addr: "127.0.0.1:6379"  #redis地址
 
-           #模式
-           mode:
-             mode: "T"  #模式
-             bat: false #聊天机器人默认为关闭
-             recall : false  #防撤回默认为关闭
+    #模式
+    mode:
+      mode: "T" #模式
+      bat: false #聊天机器人默认为关闭
+      recall : false  #防撤回默认为关闭
 
-           #服务器
-           serve:
-             port: 5000   #端口
-             addr: "127.0.0.1"   #地址
-             ws: 5700
-
+    #服务器
+    serve:
+      port: 5000  #服务器端口
+      ws: 5700   #websocket端口
 
 ### 4.声明 练手学习使用，无其他用途
