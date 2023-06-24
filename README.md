@@ -3,7 +3,6 @@
 
 ### 基于go-cqhttp与GO语言实现
 
-<img src="https://github-readme-stats.vercel.app/api?username=Xiaoxusheng&theme=blue-green">
 <img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Go badge">
 <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/Xiaoxusheng/Go-Bat">
 <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Xiaoxusheng/Go-Bat">

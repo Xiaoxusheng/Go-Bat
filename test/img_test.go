@@ -31,7 +31,7 @@ func Test_img(t *testing.T) {
 		return
 	}
 	dc.SetFontFace(face)
-	dc.SetHexColor("#2D4356")
+	dc.SetHexColor("#333")
 	//加载图片
 	image, err := gg.LoadImage("../config/3.png")
 	if err != nil {
@@ -39,9 +39,9 @@ func Test_img(t *testing.T) {
 	}
 
 	//时间
-	dc.DrawStringAnchored(times, 210, float64(height-100), 0.5, 0.5)
+	dc.DrawStringAnchored(times, 210, float64(height-60), 0.5, 0.5)
 
-	dc.DrawImageAnchored(image, width-170, height-80, 0.5, 0.5)
+	dc.DrawImageAnchored(image, width-170, height-60, 0.5, 0.5)
 
 	dc.SetColor(color.RGBA{249, 251, 231, 150})
 	dc.SetFontFace(f)

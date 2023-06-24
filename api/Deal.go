@@ -19,7 +19,8 @@ func (p *PrivateText) Controls(s any) any {
 	//if strings.Contains(s.(config.Messages).Message, "课程表") {
 	//	p.class.GetClass()
 	//}
-	return p.chatgpt.GetMessage("你是谁")
+	//return p.chatgpt.GetMessage("你是谁")
+	return "你好"
 	//s.(config.Messages).Message
 	//fmt.Println(69)
 }

@@ -6,56 +6,103 @@ import (
 	"image/color"
 	"log"
 	"math/rand"
+	"os"
 	"time"
 )
 
 func CreatePicture(str string) {
-	width := 1960
-	height := 1080
-	times := time.Now().Format("2006-01-02 15:04:05")
-	fmt.Println(times)
-	dc := gg.NewContext(width, height)
-	dc.SetHexColor("#B3C890")
-	dc.DrawRectangle(0, 0, float64(width), float64(height))
-	dc.Fill()
-	//字体
-	face, err := gg.LoadFontFace("./config/t.ttf", 60)
-	if err != nil {
-		log.Panicln(err)
-		return
-	}
-	f, err := gg.LoadFontFace("./config/t.ttf", 40)
-	if err != nil {
-		log.Panicln(err)
-		return
-	}
-	dc.SetFontFace(face)
-	dc.SetHexColor("#2D4356")
-	//加载图片
-	image, err := gg.LoadImage("./config/3.png")
-	if err != nil {
-		return
-	}
+	var width float64
+	var s string
+	list := make([]string, 0)
+	// 判断文件是否存在
+	if _, err := os.Stat("./config/t.png"); os.IsNotExist(err) {
+		img, err := gg.LoadImage("./config/t.png")
+		if err != nil {
+			log.Panicln(err)
+		}
+		dc := gg.NewContextForImage(img)
+		wd, hg := dc.MeasureString(str)
+		if wd < 1960 {
+			//不满1行
+			dc.DrawString(s, 40, 350+float64(0)*hg)
+		} else {
+			var h float64
+			var w float64
+			for i, r := range str {
 
-	//时间
-	dc.DrawStringAnchored(times, 210, float64(height-100), 0.5, 0.5)
+				w, h = dc.MeasureString(string(r))
+				wd, _ := dc.MeasureString(str[i:])
+				width += w
+				s += string(r)
+				if width >= 1960 {
+					list = append(list, s)
+					width = 0
+					s = ""
+				}
 
-	dc.DrawImageAnchored(image, width-170, height-80, 0.5, 0.5)
+				if wd < 1000 && i == len(str)-2 || i == len(str)-3 || i == len(str)-1 {
+					list = append(list, s)
+				}
 
-	dc.SetColor(color.RGBA{249, 251, 231, 150})
-	dc.SetFontFace(f)
+			}
+			for i, s := range list {
+				fmt.Println(i, s)
+				if i == 0 {
+					dc.DrawString(s, 40, 350+float64(i)*h)
+					continue
+				}
+				dc.DrawString(s, 0, 350+float64(i)*h)
+			}
+		}
 
-	rand.Seed(time.Now().UnixMicro())
-	for i := 0; i < 10; i++ {
-		fmt.Println()
-		dc.Push()
-		dc.RotateAbout(gg.Radians(40), float64(width/2), float64(height/2))
-		dc.DrawStringAnchored("@GoBat", float64(rand.Int63n(1920)), float64(rand.Int63n(1080)), 0.5, 0.5)
-		dc.Pop()
+	} else {
+		//图片不存在
+		width := 1960
+		height := 1080
+		times := time.Now().Format("2006-01-02 15:04:05")
+		fmt.Println(times)
+		dc := gg.NewContext(width, height)
+		dc.SetHexColor("#B3C890")
+		dc.DrawRectangle(0, 0, float64(width), float64(height))
+		dc.Fill()
+		//字体
+		face, err := gg.LoadFontFace("./config/t.ttf", 60)
+		if err != nil {
+			log.Panicln(err)
+			return
+		}
+		f, err := gg.LoadFontFace("./config/t.ttf", 40)
+		if err != nil {
+			log.Panicln(err)
+			return
+		}
+		dc.SetFontFace(face)
+		dc.SetHexColor("#2D4356")
+		//加载图片
+		image, err := gg.LoadImage("./config/3.png")
+		if err != nil {
+			return
+		}
+
+		//时间
+		dc.DrawStringAnchored(times, 210, float64(height-100), 0.5, 0.5)
+
+		dc.DrawImageAnchored(image, width-170, height-80, 0.5, 0.5)
+
+		dc.SetColor(color.RGBA{249, 251, 231, 150})
+		dc.SetFontFace(f)
+
+		rand.Seed(time.Now().UnixMicro())
+		for i := 0; i < 10; i++ {
+			fmt.Println()
+			dc.Push()
+			dc.RotateAbout(gg.Radians(40), float64(width/2), float64(height/2))
+			dc.DrawStringAnchored("@GoBat", float64(rand.Int63n(1920)), float64(rand.Int63n(1080)), 0.5, 0.5)
+			dc.Pop()
+		}
+		err = dc.SavePNG("./config/t.png")
+		if err != nil {
+			log.Panicln(err)
+		}
 	}
-	err = dc.SavePNG("./config/t.png")
-	if err != nil {
-		log.Panicln(err)
-	}
-
 }
