@@ -57,6 +57,8 @@ func init() {
 	viper.SetDefault("mode.mode", "T")
 	viper.SetDefault("redis.poolSize", 1000)
 	viper.SetDefault("redis.db", 0)
+	viper.SetDefault("mode.bat", false)
+	viper.SetDefault("mode.recall", false)
 
 	err = viper.Unmarshal(&K, func(config *mapstructure.DecoderConfig) {
 

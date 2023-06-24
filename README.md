@@ -13,7 +13,7 @@
 - [x] 私聊
   - [x] 天气模式: (t)
   - [x] 聊天模式：(chat 接入chatgpt)
-  - [x] 今日新闻： (f)
+  - [x] 百度热榜： (f)
   - [x] 定时消息推送：(h 例 12-4-QQ号-早早早)
   - [x] 学习通课表提送功能 (w 第三周发送3)
   - [x] 私人消息防撤回
@@ -60,14 +60,14 @@
       middlewares:
       <<: *default # 引用默认中间件
 
-#### 3.开启服务
+#### 3.开启go-cqhttp服务
 
          双击go-cqhttp.bat
        ./go-cqhttp  enter运行
 
 #### 4.服务器启动
 
-      go run main.go
+      go run main.go 或者 ./GoBat-V0.1
 
 #### 5.api接口请访问
 
@@ -83,7 +83,20 @@
 
 ### 3.配置在config.ymal
 
+           #redis
+           redis:
+             password: "" #密码
+             addr: "127.0.0.1:6379"  #地址加端口
 
+           #模式
+           mode:
+             mode: "T"  #模式
+
+           #服务器
+           serve:
+             port: 5000   #端口
+             addr: "127.0.0.1"   #地址
+             ws: 5700
 
 
 ### 4.声明 练手学习使用，无其他用途
