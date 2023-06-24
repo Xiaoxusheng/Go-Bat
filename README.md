@@ -1,4 +1,5 @@
 ## GoBat
+![](config/img_1.png)
 
 ### 基于go-cqhttp与GO语言实现
 
