@@ -32,8 +32,8 @@
 
 #### 1. 进入配置qq账号密码
 
-         uin: xxxxxxxx  # QQ账号
-         password: xxxxxx # 密码为空时使用扫码登录
+    uin: xxxxxxxx  # QQ账号
+    password: xxxxxx # 密码为空时使用扫码登录
 
 #### 2. 选择通信方式为 0 3
 
@@ -62,12 +62,12 @@
 
 #### 3.开启go-cqhttp服务
 
-         双击go-cqhttp.bat
-       ./go-cqhttp  enter运行
+    双击go-cqhttp.bat
+    ./go-cqhttp  enter运行
 
 #### 4.服务器启动
 
-      go run main.go 或者 ./GoBat-V0.1
+    go run main.go 或者 ./GoBat-V0.1
 
 #### 5.api接口请访问
 
