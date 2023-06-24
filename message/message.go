@@ -44,7 +44,7 @@ type Data struct {
 var once sync.Once
 var bat *GoBat
 var Mess config.Messages
-var MessageChan = make(chan []byte, 100)
+var MessageChan = make(chan config.Messages, 100)
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  4096,
 	WriteBufferSize: 4096,
@@ -75,83 +75,47 @@ func (b *GoBat) Send(d Data) {
 	defer resp.Body.Close()
 }
 
-// websocket
+// websocket异步监听消息，通过chan传递消息
 func (b *GoBat) receive(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
-		return
 	}
-	go func() {
-		for {
-			messageType, message, err := conn.ReadMessage()
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
-			if messageType == 1 {
-				err := json.Unmarshal(message, &Mess)
-				fmt.Println(Mess)
-				if string(message) != "" {
-					b.Send(Data{User_id: Mess.User_id, Message: Mess.Message, Auto_escape: false})
-				}
-				if err != nil {
-					log.Panicln(err)
-				}
-				Gobat := abstraction.GoBat{}
-				Gobat.SetStrategy(new(api.PrivateText))
-				Gobat.Deal(Mess)
-				b.read()
-				Mess = config.Messages{}
-			}
-		}
-	}()
-
 	for {
-		messageType, message, err := conn.ReadMessage()
+		err := conn.ReadJSON(&Mess)
 		if err != nil {
-			fmt.Println(err)
 			continue
 		}
-		if messageType == 1 {
-			MessageChan <- message
-			fmt.Println("送到通道")
-			if err != nil {
-				log.Panicln(err)
-			}
+		fmt.Println("解析mess", Mess)
+		MessageChan <- Mess
+		log.Println("送到通道", "chan还剩", 100-len(MessageChan))
 
-		}
 	}
 
 }
 
-// 启动监听
+// Start 开始监听
 func (b *GoBat) Start() {
-	log.Printf("[INFO]: %v  %v  %v", b.name, b.version, "机器人启动")
+	log.Printf("[INFO]: %v  v%v  %v", b.name, b.version, "机器人启动")
 	http.HandleFunc("/", b.receive)
 	err := http.ListenAndServe(":"+strconv.Itoa(config.K.Server.Ws), nil)
 	if err != nil {
 		log.Panicln(err)
 	}
-	b.read()
 }
 
 func (b *GoBat) Serve() {
 	Gobat := new(abstraction.GoBat)
+	Gobat.SetStrategy(new(api.PrivateText))
 	for {
 		select {
 		case c := <-MessageChan:
 			// 如果chan1成功读到数据，则进行该case处理语句
-			err := json.Unmarshal(c, &Mess)
-			if err != nil {
-				log.Panicln(err)
-			}
-			fmt.Println("Mess", Mess)
-			if Mess.Message != "" {
+			log.Println("收到Mess", c, "\n", "还剩", 100-len(MessageChan))
+			if c.Message != "" {
 				b.read()
-				Gobat.SetStrategy(new(api.PrivateText))
-				fmt.Println(Gobat.Deal(Mess).(string))
-				b.Send(Data{User_id: Mess.User_id, Message: Gobat.Deal(Mess).(string), Auto_escape: false})
+				fmt.Println("jj", Gobat.Deal(Mess).(string))
+				b.Send(Data{User_id: Mess.User_id, Message: Mess.Message, Auto_escape: false})
 				Mess = config.Messages{}
 				//b.Send(Data{User_id: Mess.User_id, Message: Mess.Message, Auto_escape: false})
 			}
