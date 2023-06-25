@@ -3,11 +3,8 @@
 
 ### 基于go-cqhttp与GO语言实现
 
-<img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Go badge">
-<img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/Xiaoxusheng/Go-Bat">
-<img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Xiaoxusheng/Go-Bat">
-<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Xiaoxusheng/Go-Bat">
-<img alt="GitHub contributors" src="https://img.shields.io/github/contributors/Xiaoxusheng/Go-Bat">
+<img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Go badge"><img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/Xiaoxusheng/Go-Bat"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Xiaoxusheng/Go-Bat"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Xiaoxusheng/Go-Bat"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/Xiaoxusheng/Go-Bat">
+
 
 ### 1 功能如下
 - [x] 私聊
