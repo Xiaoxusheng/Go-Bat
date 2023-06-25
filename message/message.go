@@ -36,9 +36,10 @@ type GoBat struct {
 }
 
 type Data struct {
-	User_id     int64  `json:"user_id"`
-	Message     string `json:"message"`
-	Auto_escape bool   `json:"auto_escape"`
+	User_id      int64  `json:"user_id"`
+	Message      string `json:"message"`
+	Message_type string `json:"message_type"`
+	Auto_escape  bool   `json:"auto_escape"`
 }
 
 var once sync.Once
@@ -63,7 +64,7 @@ func (b *GoBat) Send(d Data) {
 	if err != nil {
 		panic(err)
 	}
-	resp, err := http.Post("http://127.0.0.1:"+strconv.Itoa(config.K.Server.Port)+"/send_private_msg", "application/json", bytes.NewBuffer(marshal))
+	resp, err := http.Post("http://127.0.0.1:"+strconv.Itoa(config.K.Server.Port)+"/send_msg", "application/json", bytes.NewBuffer(marshal))
 	if err != nil {
 		panic(err)
 	}
@@ -106,7 +107,7 @@ func (b *GoBat) Start() {
 
 func (b *GoBat) Serve() {
 	Gobat := new(abstraction.GoBat)
-	Gobat.SetStrategy(new(api.PrivateText))
+	Gobat.SetStrategy(new(api.PrivatePicture))
 	for {
 		select {
 		case c := <-MessageChan:
@@ -114,8 +115,8 @@ func (b *GoBat) Serve() {
 			log.Println("收到Mess", c, "\n", "还剩", 100-len(MessageChan))
 			if c.Message != "" {
 				b.read()
-				fmt.Println("jj", Gobat.Deal(Mess).(string))
-				b.Send(Data{User_id: Mess.User_id, Message: Mess.Message, Auto_escape: false})
+				fmt.Println("jj", Gobat.Deal(Mess))
+				b.Send(Data{User_id: Mess.User_id, Message: Gobat.Deal(Mess).(string), Message_type: Mess.Message_type, Auto_escape: false})
 				Mess = config.Messages{}
 				//b.Send(Data{User_id: Mess.User_id, Message: Mess.Message, Auto_escape: false})
 			}
