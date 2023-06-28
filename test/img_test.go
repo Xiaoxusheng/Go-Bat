@@ -17,8 +17,9 @@ func Test_img(t *testing.T) {
 	var s string
 	list := make([]string, 0)
 	// 判断文件是否存在
-	if _, err := os.Stat("../config/tf.png"); err != nil {
-		//不存咋
+	if _, err := os.Stat("../config/t.png"); err != nil {
+		//不存在
+		fmt.Println("不存在")
 		width := 1960
 		height := 1080
 		times := time.Now().Format("2006-01-02 15:04:05")
@@ -69,6 +70,7 @@ func Test_img(t *testing.T) {
 
 	} else {
 		//图片存在
+		fmt.Println("存在")
 		img, err := gg.LoadImage("../config/t.png")
 		if err != nil {
 			log.Panicln(err)
@@ -101,7 +103,8 @@ func Test_img(t *testing.T) {
 					s = ""
 				}
 
-				if wd < 1000 && i == len(str)-2 || i == len(str)-3 || i == len(str)-1 {
+				if wd < 1000 && i == len(str)-1 || i == len(str)-3 {
+					fmt.Println(i, len(str)-1)
 					list = append(list, s)
 				}
 

@@ -9,6 +9,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	"unicode"
 )
 
 type Picture struct {
@@ -79,13 +80,32 @@ func (p *Picture) CreatePicture(strs string) {
 		if err != nil {
 			log.Panicln(err)
 		}
-		face, err := gg.LoadFontFace("./config/4.ttf", 50)
+		//内容字体
+		face, err := gg.LoadFontFace("./config/lishu.ttf", 50)
 		if err != nil {
 			log.Panicln(err)
 		}
+		//水印字体
+		f, err := gg.LoadFontFace("./config/t.ttf", 60)
+		if err != nil {
+			log.Panicln(err)
+			return
+		}
 		dc := gg.NewContextForImage(img)
+		dc.SetColor(color.RGBA{249, 251, 231, 150})
+		dc.SetFontFace(f)
+
+		rand.Seed(time.Now().UnixMicro())
+		for i := 0; i < 10; i++ {
+			fmt.Println()
+			dc.Push()
+			dc.RotateAbout(gg.Radians(40), float64(1096/2), float64(1080/2))
+			dc.DrawStringAnchored("@GoBat", float64(rand.Int63n(1920)), float64(rand.Int63n(1080)), 0.5, 0.5)
+			dc.Pop()
+		}
+		//内容
 		dc.SetFontFace(face)
-		dc.SetHexColor("#EEE3CB")
+		dc.SetHexColor("#E21818")
 		wd, _ := dc.MeasureString(str)
 		if wd < 1900 {
 			//不满1行
@@ -103,7 +123,9 @@ func (p *Picture) CreatePicture(strs string) {
 					width = 0
 					s = ""
 				}
-				if wd < 1000 && i == len(str)-2 || i == len(str)-3 || i == len(str)-1 {
+				// (i == len(str)-3 && !unicode.IsLetter(rune(str[i : i+1][0])))意思为当i-3时如果不是中文继续写入，是中文才添加到列表中
+				if wd < 1800 && (i == len(str)-3 && !unicode.IsLetter(rune(str[i : i+1][0]))) || i == len(str)-1 {
+					//fmt.Println(i, len(str), s,unicode.IsLetter(rune(str[i : i+1][0])),str[i : i+1][0])
 					list = append(list, s)
 				}
 
@@ -123,7 +145,7 @@ func (p *Picture) CreatePicture(strs string) {
 			return
 		}
 		dc.SetHexColor("#27374D")
-
+		//时间字体
 		dc.SetFontFace(h)
 		dc.DrawStringAnchored(times, 210, float64(1080-70), 0.5, 0.5)
 		err = dc.SavePNG("./config/f.png")

@@ -23,12 +23,13 @@ func (c *Class) getCookie() {
 	defer res.Body.Close()
 	c.Cookie = res.Cookies()
 
-	fmt.Println(c.Cookie)
+	//fmt.Println(c.Cookie)
 }
 
-func (c *Class) GetClass() {
+func (c *Class) GetClass() string {
 	if c.w == 0 {
 		c.w = int64(math.Ceil(float64((time.Now().Unix() - time.Date(time.Now().Year(), 2, 6, 0, 0, 0, 0, time.Local).Unix()) / (1000 * 60 * 60 * 24))))
+		fmt.Println(c.w)
 	}
 	if c.w < 1 || c.w > 18 {
 		panic("没课了,靓仔")
@@ -44,7 +45,7 @@ func (c *Class) GetClass() {
 	}
 	res, err := h.Do(req)
 	if err != nil {
-		return
+		return ""
 	}
 	defer res.Body.Close()
 	resp, err := io.ReadAll(res.Body)
@@ -52,4 +53,5 @@ func (c *Class) GetClass() {
 		log.Panicln(err)
 	}
 	fmt.Println(string(resp))
+	return string(resp)
 }

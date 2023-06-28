@@ -26,6 +26,9 @@ type Sender struct {
 	User_id int64  `json:"user_id,omitempty"`
 }
 
+// 处理完数据的管道
+var SendChan = make(chan string, 100)
+
 type Config struct {
 	Server struct {
 		Addr string
