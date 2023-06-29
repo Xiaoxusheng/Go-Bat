@@ -65,6 +65,7 @@ func (b *GoBat) websocket(w http.ResponseWriter, r *http.Request) {
 		}
 		fmt.Println("解析mess", Mess)
 		MessageChan <- Mess
+		Mess = config.Messages{}
 		log.Println("送到通道", "chan还剩", 100-len(MessageChan))
 
 	}
@@ -97,15 +98,16 @@ func (b *GoBat) Serve() {
 		case c := <-MessageChan:
 			// 如果MessageChan成功读到数据，则进行该case处理语句
 			log.Println("收到Mess", c, "\n", "还剩", 100-len(MessageChan))
-			if c.Message != "" {
+			if c.Message_type != "" {
 				b.read()
-				//fmt.Println("jj", Gobat.Deal(Mess))
-				Gobat.Deal(Mess)
-				Mess = config.Messages{}
-				//b.Send(Data{User_id: Mess.User_id, Message: Mess.Message, Auto_escape: false})
+				Gobat.Deal(&c)
+			} else if c.Notice_type != "" {
+				b.read()
+				Gobat.Deal(&c)
 			}
 		default:
 			// 如果上面都没有成功，则进入default处理流程
+			continue
 		}
 	}
 }

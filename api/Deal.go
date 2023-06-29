@@ -3,6 +3,7 @@ package api
 import (
 	"Go-Bat/config"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"unicode"
@@ -16,6 +17,8 @@ type PrivateText struct {
 type PrivatePicture struct {
 	class   Class
 	picture config.Picture
+	m       Manager
+	t       Timing
 }
 
 type GroupText struct {
@@ -46,6 +49,14 @@ func (p *PrivateText) Controls(s any) {
 }
 
 func (p *PrivatePicture) Controls(s any) {
+	if strings.Contains(s.(config.Messages).Message, "定时") {
+		str := strings.Split(strings.ReplaceAll(s.(config.Messages).Message, "  ", ""), "|")
+		p.t.Message = "哈哈哈"
+		p.t.Time()
+		log.Panicln("str", str)
+
+	}
+
 	if strings.Contains(s.(config.Messages).Message, "课表") {
 		i := ""
 		for _, i2 := range s.(config.Messages).Message {
@@ -58,11 +69,18 @@ func (p *PrivatePicture) Controls(s any) {
 		fmt.Println(" p.class.w:", p.class.w)
 		p.picture.CreatePicture(p.class.GetClass())
 		fmt.Println("生成完成")
+	} else {
+		p.picture.CreatePicture(s.(config.Messages).Message)
 	}
-	p.picture.CreatePicture(s.(config.Messages).Message)
+	//消息防撤回
+	if s.(config.Messages).Notice_type == "friend_recall" && config.K.Mode.Recall {
+		p.m.preventRecall(s.(config.Messages))
+		fmt.Println("p.m.c.Message", M.Data.Message)
+		p.picture.CreatePicture(M.Data.Message)
+	}
 
 	//制作图片
-	config.SendChan <- "[CQ:image,file=file:///www/Go-Bat/www/wwwroot/GoBat/config/f.png]"
+	config.SendChan <- "[CQ:image,file=file:///www/Go-Bat/config/f.png]"
 }
 
 // 群聊

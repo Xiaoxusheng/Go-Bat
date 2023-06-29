@@ -18,6 +18,8 @@ type Messages struct {
 	Target_id    int64   `json:"target_id,omitempty"`
 	Message      string  `json:"message,omitempty"`
 	Sender       *Sender `json:"sender,omitempty"`
+	Notice_type  string  `json:"notice_type,omitempty"`
+	Operator_id  int64   `json:"operator_id,omitempty"`
 }
 
 type Sender struct {
@@ -42,7 +44,9 @@ type Config struct {
 		PoolSize int
 	}
 	Mode struct {
-		Mode string
+		Mode   string
+		Bat    bool
+		Recall bool
 	}
 }
 

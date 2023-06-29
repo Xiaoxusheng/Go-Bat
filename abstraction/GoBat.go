@@ -3,11 +3,13 @@ package abstraction
 import (
 	"Go-Bat/config"
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 // 抽象接口
@@ -50,8 +52,12 @@ func (b *GoBat) Send(d Data) {
 }
 
 // 调用
-func (bat *GoBat) Deal(mess config.Messages) {
+func (bat *GoBat) Deal(mess *config.Messages) {
 	//redis记录人数
+	ctx := context.Background()
+
+	config.Rdb.Set(ctx, strconv.FormatInt(mess.User_id, 10), mess.Message, time.Minute*10)
+	fmt.Println("聊天人数：", len(config.Rdb.Keys(ctx, "*").Val()))
 	bat.bat.Controls(mess)
 
 	go func() {
@@ -59,6 +65,10 @@ func (bat *GoBat) Deal(mess config.Messages) {
 			select {
 			case c := <-config.SendChan:
 				fmt.Println("数据进入")
+				if mess.User_id == 0 {
+					mess.User_id = 3096407768
+					mess.Message_type = "private"
+				}
 				bat.Send(Data{User_id: mess.User_id, Message: c, Message_type: mess.Message_type, Auto_escape: false})
 			default:
 				continue
