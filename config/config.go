@@ -48,6 +48,10 @@ type Config struct {
 		Bat    bool
 		Recall bool
 	}
+	ChaoXing struct {
+		Name     string
+		Password string
+	}
 }
 
 var K = Config{}
@@ -64,8 +68,11 @@ func init() {
 	viper.SetDefault("mode.mode", "T")
 	viper.SetDefault("redis.poolSize", 1000)
 	viper.SetDefault("redis.db", 0)
+	viper.SetDefault("redis.password", "admin")
 	viper.SetDefault("mode.bat", false)
 	viper.SetDefault("mode.recall", false)
+	viper.SetDefault("chaoXing.name", "19888340365")
+	viper.SetDefault("chaoXing.password", "admin123")
 
 	err = viper.Unmarshal(&K, func(config *mapstructure.DecoderConfig) {
 

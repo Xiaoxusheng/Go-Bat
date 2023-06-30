@@ -64,7 +64,8 @@ func (bat *GoBat) Deal(mess *config.Messages) {
 		for {
 			select {
 			case c := <-config.SendChan:
-				fmt.Println("数据进入")
+				fmt.Println("数据进入chan")
+				//定时消息
 				if mess.User_id == 0 {
 					mess.User_id = 3096407768
 					mess.Message_type = "private"

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"Go-Bat/config"
 	"fmt"
 	"io"
 	"log"
@@ -16,7 +17,7 @@ type Class struct {
 }
 
 func (c *Class) getCookie() {
-	res, err := http.Get("https://passport2.chaoxing.com/api/login?" + "name=" + "19888340365" + "&pwd=" + "lei125608")
+	res, err := http.Get("https://passport2.chaoxing.com/api/login?" + "name=" + config.K.ChaoXing.Name + "&pwd=" + config.K.ChaoXing.Password)
 	if err != nil {
 		log.Panicln(err)
 	}
@@ -27,12 +28,13 @@ func (c *Class) getCookie() {
 }
 
 func (c *Class) GetClass() string {
+	//c.w不存在时，默认为当前周
 	if c.w == 0 {
 		c.w = int64(math.Ceil(float64((time.Now().Unix() - time.Date(time.Now().Year(), 2, 6, 0, 0, 0, 0, time.Local).Unix()) / (1000 * 60 * 60 * 24))))
 		fmt.Println(c.w)
 	}
 	if c.w < 1 || c.w > 18 {
-		panic("没课了,靓仔")
+		return "没课啊,靓仔"
 	}
 	c.getCookie()
 	h := http.Client{}

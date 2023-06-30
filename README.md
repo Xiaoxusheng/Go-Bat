@@ -68,7 +68,7 @@
 
 #### 5.api接口请访问
 
-<https://docs.go-cqhttp.org/>
+[go-cqhttp](https://docs.go-cqhttp.org/)
 
 #### 6.结果
 

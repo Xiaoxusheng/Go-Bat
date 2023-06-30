@@ -9,6 +9,7 @@ import (
 	"os"
 	"testing"
 	"time"
+	"unicode"
 )
 
 func Test_img(t *testing.T) {
@@ -103,8 +104,8 @@ func Test_img(t *testing.T) {
 					s = ""
 				}
 
-				if wd < 1000 && i == len(str)-1 || i == len(str)-3 {
-					fmt.Println(i, len(str)-1)
+				if wd < 1800 && (i == len(str)-3 && !unicode.IsLetter(rune(str[i : i+1][0]))) || i == len(str)-1 {
+					fmt.Println(i, len(str), s, unicode.IsLetter(rune(str[i : i+1][0])), str[i : i+1][0])
 					list = append(list, s)
 				}
 
