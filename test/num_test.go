@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -55,7 +56,6 @@ func Test_num(t *testing.T) {
 		//fmt.Println("name:", v.Name(), "type", strings.Replace(filepath.Ext(v.Name()), ".", "", 1), v.IsDir())
 		fmt.Println(strings.Split(v.Name(), ".")[0] == time.Now().Format("2006-01-02"))
 	}
-
 	//open, err := os.Open("../config/t.png")
 	//if err != nil {
 	//	log.Panicln(err)
@@ -65,4 +65,7 @@ func Test_num(t *testing.T) {
 	data := MyIntSlice{9, 4, 7, 2, 1}
 	sort.Sort(data)
 	fmt.Println(data)
+	c := context.TODO()
+	f := context.WithValue(c, "q", "w")
+	fmt.Println(f.Value("q"))
 }

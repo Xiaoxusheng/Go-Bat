@@ -7,7 +7,7 @@ redis:
 
 #模式
 mode:
-  mode: "T" #模式
+  mode: "p" #模式
   bat: false #聊天机器人默认为关闭
   recall: true  #防撤回默认为关闭
 
@@ -19,6 +19,6 @@ serve:
 #chaoxing
 chaoXing:
   name: "19888340365"
-  password: "admin123"
+  password: "lei125608"
 
 

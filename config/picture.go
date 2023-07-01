@@ -125,8 +125,8 @@ func (p *Picture) CreatePicture(strs string) {
 				}
 				// (i == len(str)-3 && !unicode.IsLetter(rune(str[i : i+1][0])))意思为当i-3时如果不是中文继续写入，是中文才添加到列表中
 				//(i == len(str)-3 && !unicode.IsSymbol(rune(str[i : i+1][0])))意思为当i-3时如果不是字符=这种继续写入，是中文才添加到列表中
-				if wd < 1800 && (i == len(str)-3 && !unicode.IsLetter(rune(str[i : i+1][0]))) && (i == len(str)-3 && !unicode.IsSymbol(rune(str[i : i+1][0]))) || i == len(str)-1 {
-					fmt.Println(i, len(str), s, unicode.IsLetter(rune(str[i : i+1][0])), str[i:i+1])
+				if wd < 1800 && (i == len(str)-3 && !unicode.IsLetter(rune(str[i : i+1][0])) && !unicode.IsSymbol(rune(str[i : i+1][0])) && !unicode.IsNumber(rune(str[i : i+1][0]))) || i == len(str)-1 {
+					fmt.Println(i, len(str), s, unicode.IsLetter(rune(str[i : i+1][0])), unicode.IsSymbol(rune(str[i : i+1][0])), str[i : i+1][0])
 					list = append(list, s)
 				}
 

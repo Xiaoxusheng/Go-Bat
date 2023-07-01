@@ -6,13 +6,13 @@ import (
 	"time"
 )
 
-type Timing struct {
+type timing struct {
 	Message string
 	Number  int64
 	Private string
 }
 
-func (t *Timing) Time() {
+func (t *timing) Time() {
 	now := time.Now()
 	nextDay := time.Date(now.Year(), now.Month(), now.Day()+1, 8, now.Minute(), now.Second()+10, 0, now.Location()).Sub(now)
 	//nextDay := now.Add(time.Second * 10)

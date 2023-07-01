@@ -10,11 +10,11 @@ import (
 	"time"
 )
 
-type CollyBaidu struct {
+type collyBaidu struct {
 }
 
 // 获取百度热搜
-func (cl *CollyBaidu) crawler() string {
+func (cl *collyBaidu) crawler() string {
 	var str string
 	c := colly.NewCollector(
 		colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.54"),
@@ -42,7 +42,6 @@ func (cl *CollyBaidu) crawler() string {
 	c.OnRequest(func(r *colly.Request) {
 		fmt.Println("请求之前回调:", r.URL.String())
 	})
-	//fmt.Println(str)
 	file, err := os.OpenFile("./config/"+time.Now().Format("2006-01-02")+".txt", os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		log.Panicln("创建hot.txt出错" + err.Error())

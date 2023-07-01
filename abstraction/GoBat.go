@@ -1,6 +1,7 @@
 package abstraction
 
 import (
+	"Go-Bat/api"
 	"Go-Bat/config"
 	"bytes"
 	"context"
@@ -29,11 +30,11 @@ type GoBat struct {
 }
 
 // 设置策略
-func (bat *GoBat) SetStrategy(B Bat) {
+func (bat *GoBat) setStrategy(B Bat) {
 	bat.bat = B
 }
 
-func (b *GoBat) Send(d Data) {
+func (bat *GoBat) Send(d Data) {
 	fmt.Println("发送", d)
 	marshal, err := json.Marshal(d)
 	if err != nil {
@@ -52,14 +53,11 @@ func (b *GoBat) Send(d Data) {
 }
 
 // 调用
-func (bat *GoBat) Deal(mess *config.Messages) {
+func (bat *GoBat) Deal(mess config.Messages) {
 	//redis记录人数
 	ctx := context.Background()
-
 	config.Rdb.Set(ctx, strconv.FormatInt(mess.User_id, 10), mess.Message, time.Minute*10)
 	fmt.Println("聊天人数：", len(config.Rdb.Keys(ctx, "*").Val()))
-	bat.bat.Controls(mess)
-
 	go func() {
 		for {
 			select {
@@ -76,4 +74,19 @@ func (bat *GoBat) Deal(mess *config.Messages) {
 			}
 		}
 	}()
+	//处理消息
+	bat.bat.Controls(mess)
+
+}
+
+// 向外暴露的接口
+func (bat *GoBat) Tactics() {
+	fmt.Println(config.K.Mode.Mode == "T")
+	if config.K.Mode.Mode == "T" {
+		fmt.Println(111)
+		bat.setStrategy(new(api.Text))
+	} else {
+		fmt.Println(222)
+		bat.setStrategy(new(api.Picture))
+	}
 }

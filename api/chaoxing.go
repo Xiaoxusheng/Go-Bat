@@ -11,12 +11,12 @@ import (
 	"time"
 )
 
-type Class struct {
+type class struct {
 	Cookie []*http.Cookie
 	w      int64
 }
 
-func (c *Class) getCookie() {
+func (c *class) getCookie() {
 	res, err := http.Get("https://passport2.chaoxing.com/api/login?" + "name=" + config.K.ChaoXing.Name + "&pwd=" + config.K.ChaoXing.Password)
 	if err != nil {
 		log.Panicln(err)
@@ -27,7 +27,7 @@ func (c *Class) getCookie() {
 	//fmt.Println(c.Cookie)
 }
 
-func (c *Class) GetClass() string {
+func (c *class) GetClass() string {
 	//c.w不存在时，默认为当前周
 	if c.w == 0 {
 		c.w = int64(math.Ceil(float64((time.Now().Unix() - time.Date(time.Now().Year(), 2, 6, 0, 0, 0, 0, time.Local).Unix()) / (1000 * 60 * 60 * 24))))

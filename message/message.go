@@ -2,7 +2,6 @@ package message
 
 import (
 	"Go-Bat/abstraction"
-	"Go-Bat/api"
 	"Go-Bat/config"
 	"fmt"
 	"github.com/gorilla/websocket"
@@ -24,9 +23,8 @@ type Message interface {
 	//	已读消息
 	read()
 	// 服务
-	Serve()
+	Serve(Gobat *abstraction.GoBat)
 	//
-
 }
 
 type GoBat struct {
@@ -90,9 +88,7 @@ func (b *GoBat) Start() {
 }
 
 // 接收消息
-func (b *GoBat) Serve() {
-	Gobat := new(abstraction.GoBat)
-	Gobat.SetStrategy(new(api.PrivatePicture))
+func (b *GoBat) Serve(Gobat *abstraction.GoBat) {
 	for {
 		select {
 		case c := <-MessageChan:
@@ -100,10 +96,10 @@ func (b *GoBat) Serve() {
 			log.Println("收到Mess", c, "\n", "还剩", 100-len(MessageChan))
 			if c.Message_type != "" {
 				b.read()
-				Gobat.Deal(&c)
+				Gobat.Deal(c)
 			} else if c.Notice_type != "" {
 				b.read()
-				Gobat.Deal(&c)
+				Gobat.Deal(c)
 			}
 		default:
 			// 如果上面都没有成功，则进入default处理流程

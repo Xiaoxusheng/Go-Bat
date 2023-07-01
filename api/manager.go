@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-type Manager struct {
+type manager struct {
 	Data struct {
 		Message_type string `json:"message_type,omitempty"`
 		Message      string `json:"message,omitempty"`
@@ -22,10 +22,10 @@ type Manager struct {
 "message_seq":10896,"message_type":"private","real_id":10896,"sender":{"nickname":"Ra","user_id":3096407768},
 "time":1687999849},"message":"","retcode":0,"status":"ok"}*/
 
-var M = Manager{}
+var M = manager{}
 
 // 防撤回
-func (m *Manager) preventRecall(c config.Messages) {
+func (m *manager) preventRecall(c config.Messages) {
 	res, err := http.Get("http://127.0.0.1:5000/get_msg" + "?message_id=" + strconv.FormatInt(c.Message_id, 10))
 	if err != nil {
 		log.Panicln(err)
