@@ -23,6 +23,7 @@ type Messages struct {
 	Group_id     int64   `json:"group_id,omitempty"`
 	Group_name   string  `json:"group_name,omitempty"`
 	Group_memo   string  `json:"group_memo,omitempty"`
+	Request_type string  `json:"request_type,omitempty"`
 }
 
 /*

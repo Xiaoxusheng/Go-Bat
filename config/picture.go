@@ -16,9 +16,10 @@ type Picture struct {
 }
 
 func (p *Picture) CreatePicture(strs string) {
+	t := time.Now()
 	str := strings.ReplaceAll(strs, "\t", "")
 	str = strings.ReplaceAll(str, "\n", "")
-	str = strings.ReplaceAll(str, " ", "")
+	str = strings.ReplaceAll(str, "   ", "")
 	var width float64
 	var s string
 	list := make([]string, 0)
@@ -123,10 +124,11 @@ func (p *Picture) CreatePicture(strs string) {
 					width = 0
 					s = ""
 				}
+
 				// (i == len(str)-3 && !unicode.IsLetter(rune(str[i : i+1][0])))意思为当i-3时如果不是中文继续写入，是中文才添加到列表中
 				//(i == len(str)-3 && !unicode.IsSymbol(rune(str[i : i+1][0])))意思为当i-3时如果不是字符=这种继续写入，是中文才添加到列表中
-				if wd < 1800 && (i == len(str)-3 && !unicode.IsLetter(rune(str[i : i+1][0])) && !unicode.IsSymbol(rune(str[i : i+1][0])) && !unicode.IsNumber(rune(str[i : i+1][0]))) || i == len(str)-1 {
-					fmt.Println(i, len(str), s, unicode.IsLetter(rune(str[i : i+1][0])), unicode.IsSymbol(rune(str[i : i+1][0])), str[i : i+1][0])
+				if wd < 1800 && (i == len(str)-3 && !unicode.IsLetter(rune(str[i : i+1][0])) && !unicode.IsSymbol(rune(str[i : i+1][0])) && !unicode.IsNumber(rune(str[i : i+1][0])) && !unicode.IsSpace(rune(str[i : i+1][0]))) || i == len(str)-1 {
+					fmt.Println(i, len(str), s, unicode.IsLetter(rune(str[i : i+1][0])), unicode.IsSymbol(rune(str[i : i+1][0])), unicode.IsSpace(rune(str[i : i+1][0])), str[i:i+1])
 					list = append(list, s)
 				}
 
@@ -153,5 +155,6 @@ func (p *Picture) CreatePicture(strs string) {
 		if err != nil {
 			log.Panicln(err)
 		}
+		fmt.Println("生成完成,时间为：", time.Now().Sub(t))
 	}
 }

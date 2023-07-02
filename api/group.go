@@ -23,7 +23,6 @@ type GroupList struct {
 }
 
 func (g *GroupList) receive(s any) {
-
 	//默认为1小时
 	time := 60 * 60
 	id := s.(config.Messages).Message[strings.Index(s.(config.Messages).Message, "=")+1 : strings.Index(s.(config.Messages).Message, "]")]
@@ -66,16 +65,4 @@ func (g *GroupList) ban(Group GroupList) {
 		return
 	}
 	fmt.Println(string(res))
-}
-
-func (g *GroupList) upload(Group GroupList) {
-	marshal, err := json.Marshal(Group)
-	if err != nil {
-		log.Panicln(err)
-	}
-	resp, err := http.Post("http://127.0.0.1:"+strconv.Itoa(config.K.Server.Port)+"/upload_group_file", "application/json", bytes.NewBuffer(marshal))
-	if err != nil {
-		log.Panicln(err)
-	}
-	defer resp.Body.Close()
 }

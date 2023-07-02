@@ -15,6 +15,7 @@ type timing struct {
 func (t *timing) Time() {
 	now := time.Now()
 	nextDay := time.Date(now.Year(), now.Month(), now.Day()+1, now.Hour(), now.Minute(), now.Second(), 0, now.Location()).Sub(now)
+	//创建*Time
 	timer := time.NewTimer(nextDay)
 	fmt.Println("开始")
 	//异步
@@ -26,7 +27,6 @@ func (t *timing) Time() {
 				now = time.Now()
 				nextDay = time.Date(now.Year(), now.Month(), now.Day()+1, now.Hour(), now.Minute(), now.Second(), 0, now.Location()).Sub(now)
 				_ = timer.Reset(nextDay)
-				fmt.Println(timer.C)
 				config.SendChan <- t.Message
 			}
 		}

@@ -30,6 +30,11 @@ type Group struct {
 	m  manager
 }
 
+// 处理其他事件
+type Other struct {
+	a AutoFriend
+}
+
 // 生成文字
 type Text struct {
 	m mess
@@ -73,7 +78,6 @@ func (p *Picture) Controls(s any) {
 		p.p.CreatePicture(str)
 		config.SendChan <- "[CQ:image,file=file:///www/Go-Bat/config/f.png]"
 		return
-
 	} else if s.(config.Messages).Message_type == "group" {
 		p.m = new(Group)
 		str := p.m.MessageDeal(s)
@@ -84,6 +88,7 @@ func (p *Picture) Controls(s any) {
 		config.SendChan <- "[CQ:image,file=file:///www/Go-Bat/config/f.png]"
 		return
 	} else if s.(config.Messages).Notice_type != "" {
+		//撤回消息
 		str := p.m.MessageDeal(s)
 		if str == "" {
 			return
@@ -91,7 +96,12 @@ func (p *Picture) Controls(s any) {
 		p.p.CreatePicture(M.Data.Message)
 		config.SendChan <- str + "[CQ:image,file=file:///www/Go-Bat/config/f.png]"
 		return
+	} else if s.(config.Messages).Post_type == "request" {
+		//好友添加
+		p.m = new(Other)
+		p.m.MessageDeal(s)
 	}
+
 	str := p.m.MessageDeal(s)
 	if str == "" {
 		return
@@ -183,6 +193,13 @@ func (g *Group) MessageDeal(s any) string {
 	}
 
 	return st
+}
+
+func (o *Other) MessageDeal(s any) string {
+	if s.(config.Messages).Request_type == "friend" {
+		o.a.auto(s)
+	}
+	return ""
 }
 
 //func (p *Private) Controls(s any) {

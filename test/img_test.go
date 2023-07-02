@@ -13,7 +13,7 @@ import (
 )
 
 func Test_img(t *testing.T) {
-	str := ""
+	str := "const axios = require(\"axios\")\n\n//{\"post_type\":\"request\",\"request_type\":\"friend\",\"time\":1679386108,\"self_id\":2673893724,\"user_id\":1978150028,\"comment\":\"信息\",\"flag\":\"1679386108000000\"}\nexports.addfriends = async ({flag, comment}) => {\n    console.log(\"commit:\", comment)\n    const {data: res} = await axios({\n        method: \"post\",\n        url: \"http://127.0.0.1:5000/set_friend_add_request\",\n        data: {\n            flag: flag,\n            approve: true,\n        }\n    })\n    console.log(res)\n\n}\n"
 	var width float64
 	var s string
 	list := make([]string, 0)
@@ -104,7 +104,7 @@ func Test_img(t *testing.T) {
 					s = ""
 				}
 
-				if wd < 1800 && (i == len(str)-3 && !unicode.IsLetter(rune(str[i : i+1][0]))) || i == len(str)-1 {
+				if wd < 1800 && (i == len(str)-3 && !unicode.IsLetter(rune(str[i : i+1][0])) && !unicode.IsSymbol(rune(str[i : i+1][0])) && !unicode.IsNumber(rune(str[i : i+1][0])) && !unicode.IsSpace(rune(str[i : i+1][0]))) || i == len(str)-1 {
 					fmt.Println(i, len(str), s, unicode.IsLetter(rune(str[i : i+1][0])), str[i : i+1][0])
 					list = append(list, s)
 				}
