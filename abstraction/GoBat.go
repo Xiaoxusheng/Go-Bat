@@ -20,6 +20,7 @@ type Bat interface {
 
 type Data struct {
 	User_id      int64  `json:"user_id"`
+	Group_id     int64  `json:"group_id"`
 	Message      string `json:"message"`
 	Message_type string `json:"message_type"`
 	Auto_escape  bool   `json:"auto_escape"`
@@ -68,7 +69,7 @@ func (bat *GoBat) Deal(mess config.Messages) {
 					mess.User_id = 3096407768
 					mess.Message_type = "private"
 				}
-				bat.Send(Data{User_id: mess.User_id, Message: c, Message_type: mess.Message_type, Auto_escape: false})
+				bat.Send(Data{User_id: mess.User_id, Message: c, Message_type: mess.Message_type, Auto_escape: false, Group_id: mess.Group_id})
 			default:
 				continue
 			}

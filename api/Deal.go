@@ -27,6 +27,7 @@ type Private struct {
 // 群聊
 type Group struct {
 	gh GroupList
+	m  manager
 }
 
 // 生成文字
@@ -48,6 +49,7 @@ func (t *Text) Controls(s any) {
 			return
 		}
 		config.SendChan <- t.m.MessageDeal(s)
+		return
 
 	} else if s.(config.Messages).Message_type == "group" {
 		t.m = new(Group)
@@ -55,7 +57,9 @@ func (t *Text) Controls(s any) {
 			return
 		}
 		config.SendChan <- t.m.MessageDeal(s)
+		return
 	}
+	t.m.MessageDeal(s)
 }
 
 // 图片
@@ -68,6 +72,7 @@ func (p *Picture) Controls(s any) {
 		}
 		p.p.CreatePicture(str)
 		config.SendChan <- "[CQ:image,file=file:///www/Go-Bat/config/f.png]"
+		return
 
 	} else if s.(config.Messages).Message_type == "group" {
 		p.m = new(Group)
@@ -77,8 +82,22 @@ func (p *Picture) Controls(s any) {
 		}
 		p.p.CreatePicture(str)
 		config.SendChan <- "[CQ:image,file=file:///www/Go-Bat/config/f.png]"
+		return
+	} else if s.(config.Messages).Notice_type != "" {
+		str := p.m.MessageDeal(s)
+		if str == "" {
+			return
+		}
+		p.p.CreatePicture(M.Data.Message)
+		config.SendChan <- str + "[CQ:image,file=file:///www/Go-Bat/config/f.png]"
+		return
 	}
-
+	str := p.m.MessageDeal(s)
+	if str == "" {
+		return
+	}
+	p.p.CreatePicture(str)
+	config.SendChan <- "[CQ:image,file=file:///www/Go-Bat/config/f.png]"
 }
 
 // 私聊
@@ -139,7 +158,7 @@ func (p *Private) MessageDeal(s any) string {
 	if s.(config.Messages).Notice_type == "friend_recall" && config.K.Mode.Recall {
 		p.m.preventRecall(s.(config.Messages))
 		fmt.Println("p.m.c.Message", M.Data.Message)
-		st = "[CQ:at," + "qq=" + strconv.FormatInt(s.(config.Messages).User_id, 10) + "]撤回消息" + "\n" + M.Data.Message_type
+		st = "[CQ:at," + "qq=" + strconv.FormatInt(s.(config.Messages).User_id, 10) + "]撤回消息" + "\n"
 	}
 
 	return st
@@ -147,9 +166,23 @@ func (p *Private) MessageDeal(s any) string {
 
 // 群聊
 func (g *Group) MessageDeal(s any) string {
-	g.gh.receive(s)
+	st := s.(config.Messages).Message
+	if s.(config.Messages).User_id == 3096407768 {
+		if strings.Contains(s.(config.Messages).Message, "禁言") {
+			g.gh.receive(s)
 
-	return ""
+		}
+		if s.(config.Messages).Notice_type == "group_recall" && s.(config.Messages).Operator_id == s.(config.Messages).User_id && config.K.Mode.Recall {
+			g.m.preventRecall(s.(config.Messages))
+			fmt.Println("p.m.c.Message", M.Data.Message)
+			st = "[CQ:at," + "qq=" + strconv.FormatInt(s.(config.Messages).User_id, 10) + "]撤回消息" + "\n"
+		}
+
+	} else {
+		st = "您没有权限"
+	}
+
+	return st
 }
 
 //func (p *Private) Controls(s any) {

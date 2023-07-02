@@ -86,7 +86,7 @@ func (p *Picture) CreatePicture(strs string) {
 			log.Panicln(err)
 		}
 		//水印字体
-		f, err := gg.LoadFontFace("./config/t.ttf", 60)
+		f, err := gg.LoadFontFace("./config/t.ttf", 70)
 		if err != nil {
 			log.Panicln(err)
 			return
@@ -99,7 +99,7 @@ func (p *Picture) CreatePicture(strs string) {
 		for i := 0; i < 10; i++ {
 			fmt.Println()
 			dc.Push()
-			dc.RotateAbout(gg.Radians(40), float64(1096/2), float64(1080/2))
+			dc.RotateAbout(gg.Radians(45), float64(1096/2), float64(1080/2))
 			dc.DrawStringAnchored("@GoBat", float64(rand.Int63n(1920)), float64(rand.Int63n(1080)), 0.5, 0.5)
 			dc.Pop()
 		}

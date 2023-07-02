@@ -23,35 +23,32 @@ type GroupList struct {
 }
 
 func (g *GroupList) receive(s any) {
-	if s.(config.Messages).User_id == 3096407768 {
-		if strings.Contains(s.(config.Messages).Message, "禁言") {
-			//默认为1小时
-			time := 60 * 60
-			id := s.(config.Messages).Message[strings.Index(s.(config.Messages).Message, "=")+1 : strings.Index(s.(config.Messages).Message, "]")]
-			parseInt, err := strconv.ParseInt(id, 10, 64)
-			if err != nil {
-				log.Panicln(err)
-			}
-			i := ""
-			r := strings.Split(s.(config.Messages).Message, "]")[1]
-			for _, v := range r {
-				if unicode.IsNumber(v) {
-					i += string(v)
-				}
-			}
 
-			if i != "" {
-				parseUint, err := strconv.Atoi(i)
-				if err != nil {
-					log.Panicln(err)
-				}
-				time = 60 * parseUint
-			}
-			fmt.Println("时间", time)
-			g.ban(GroupList{s.(config.Messages).Group_id, parseInt, uint32(time), "", "", ""})
-		}
-
+	//默认为1小时
+	time := 60 * 60
+	id := s.(config.Messages).Message[strings.Index(s.(config.Messages).Message, "=")+1 : strings.Index(s.(config.Messages).Message, "]")]
+	parseInt, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		log.Panicln(err)
 	}
+	i := ""
+	r := strings.Split(s.(config.Messages).Message, "]")[1]
+	for _, v := range r {
+		if unicode.IsNumber(v) {
+			i += string(v)
+		}
+	}
+
+	if i != "" {
+		parseUint, err := strconv.Atoi(i)
+		if err != nil {
+			log.Panicln(err)
+		}
+		time = 60 * parseUint
+	}
+	fmt.Println("时间", time)
+	g.ban(GroupList{s.(config.Messages).Group_id, parseInt, uint32(time), "", "", ""})
+
 }
 
 func (g *GroupList) ban(Group GroupList) {

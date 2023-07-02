@@ -91,7 +91,7 @@
        mode:
          mode: "p" #模式  #图片模式
          bat: false #聊天机器人默认为关闭
-         recall: true  #防撤回默认为关闭
+         recall: true  #防撤回默认为打开
 
        #服务器
        serve:
