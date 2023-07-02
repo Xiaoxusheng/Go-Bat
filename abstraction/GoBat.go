@@ -81,12 +81,9 @@ func (bat *GoBat) Deal(mess config.Messages) {
 
 // 向外暴露的接口
 func (bat *GoBat) Tactics() {
-	fmt.Println(config.K.Mode.Mode == "T")
 	if config.K.Mode.Mode == "T" {
-		fmt.Println(111)
 		bat.setStrategy(new(api.Text))
 	} else {
-		fmt.Println(222)
 		bat.setStrategy(new(api.Picture))
 	}
 }

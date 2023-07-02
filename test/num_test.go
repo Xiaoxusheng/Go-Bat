@@ -60,7 +60,12 @@ func Test_num(t *testing.T) {
 	//if err != nil {
 	//	log.Panicln(err)
 	//}
-	//w := bufio.NewWriter(open)
+	//w := bufio.NewReader(open)
+	//a:=make([]byte,100)
+	//read, err := w.Read(a)
+	//if err != nil {
+	//	return
+	//}
 	//fmt.Println(w.Size())
 	data := MyIntSlice{9, 4, 7, 2, 1}
 	sort.Sort(data)
@@ -68,4 +73,5 @@ func Test_num(t *testing.T) {
 	c := context.TODO()
 	f := context.WithValue(c, "q", "w")
 	fmt.Println(f.Value("q"))
+
 }

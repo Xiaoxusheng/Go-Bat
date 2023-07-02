@@ -44,10 +44,16 @@ type Picture struct {
 func (t *Text) Controls(s any) {
 	if s.(config.Messages).Message_type == "private" {
 		t.m = new(Private)
+		if t.m.MessageDeal(s) == "" {
+			return
+		}
 		config.SendChan <- t.m.MessageDeal(s)
 
 	} else if s.(config.Messages).Message_type == "group" {
 		t.m = new(Group)
+		if t.m.MessageDeal(s) == "" {
+			return
+		}
 		config.SendChan <- t.m.MessageDeal(s)
 	}
 }
@@ -79,11 +85,11 @@ func (p *Picture) Controls(s any) {
 func (p *Private) MessageDeal(s any) string {
 	st := s.(config.Messages).Message
 	if strings.Contains(s.(config.Messages).Message, "定时") {
-		str := strings.Split(strings.ReplaceAll(s.(config.Messages).Message, "  ", ""), "|")
+		//str := strings.Split(strings.ReplaceAll(s.(config.Messages).Message, "  ", ""), "|")
 		//要发送的 消息
 		p.t.Message = "哈哈哈"
 		p.t.Time()
-		log.Panicln("str", str)
+		//log.Panicln("str", str)
 
 	}
 	//抢红包

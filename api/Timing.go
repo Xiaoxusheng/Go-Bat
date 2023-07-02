@@ -14,19 +14,21 @@ type timing struct {
 
 func (t *timing) Time() {
 	now := time.Now()
-	nextDay := time.Date(now.Year(), now.Month(), now.Day()+1, 8, now.Minute(), now.Second()+10, 0, now.Location()).Sub(now)
-	//nextDay := now.Add(time.Second * 10)
+	nextDay := time.Date(now.Year(), now.Month(), now.Day()+1, now.Hour(), now.Minute(), now.Second(), 0, now.Location()).Sub(now)
 	timer := time.NewTimer(nextDay)
 	fmt.Println("开始")
 	//异步
 	go func() {
-		select {
-		case <-timer.C:
-			//重置
-			now = time.Now()
-			nextDay = time.Date(now.Year(), now.Month(), now.Day()+1, 8, now.Minute(), now.Second()+10, 0, now.Location()).Sub(now)
-			timer = time.NewTimer(nextDay)
-			config.SendChan <- t.Message
+		for {
+			select {
+			case <-timer.C:
+				//重置
+				now = time.Now()
+				nextDay = time.Date(now.Year(), now.Month(), now.Day()+1, now.Hour(), now.Minute(), now.Second(), 0, now.Location()).Sub(now)
+				_ = timer.Reset(nextDay)
+				fmt.Println(timer.C)
+				config.SendChan <- t.Message
+			}
 		}
 	}()
 
