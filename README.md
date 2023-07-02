@@ -80,28 +80,28 @@
 
 ### 3.配置在config.ymal
 
-   #redis
-   redis:
-     password: ""  #redis密码
-     addr: ""  #redis地址
-     db: 0
-     poolsize: 1000
+       #redis
+       redis:
+         password: ""  #redis密码
+         addr: ""  #redis地址
+         db: 0
+         poolsize: 1000
 
-   #模式
-   mode:
-     mode: "p" #模式  #图片模式
-     bat: false #聊天机器人默认为关闭
-     recall: true  #防撤回默认为关闭
+       #模式
+       mode:
+         mode: "p" #模式  #图片模式
+         bat: false #聊天机器人默认为关闭
+         recall: true  #防撤回默认为关闭
 
-   #服务器
-   serve:
-     port: 5000  #服务器端口
-     ws: 5700   #websocket端口
+       #服务器
+       serve:
+         port: 5000  #服务器端口
+         ws: 5700   #websocket端口
 
-   #chaoxing
-   chaoXing:
-     name: ""  #学习通注册的手机号
-     password: ""  #密码
+       #chaoxing
+       chaoXing:
+         name: ""  #学习通注册的手机号
+         password: ""  #密码
 
 
 ### 4.声明 练手学习使用，无其他用途
