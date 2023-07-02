@@ -26,6 +26,7 @@ type Private struct {
 
 // 群聊
 type Group struct {
+	gh GroupList
 }
 
 // 生成文字
@@ -76,7 +77,7 @@ func (p *Picture) Controls(s any) {
 
 // 私聊
 func (p *Private) MessageDeal(s any) string {
-	st := ""
+	st := s.(config.Messages).Message
 	if strings.Contains(s.(config.Messages).Message, "定时") {
 		str := strings.Split(strings.ReplaceAll(s.(config.Messages).Message, "  ", ""), "|")
 		//要发送的 消息
@@ -134,10 +135,14 @@ func (p *Private) MessageDeal(s any) string {
 		fmt.Println("p.m.c.Message", M.Data.Message)
 		st = "[CQ:at," + "qq=" + strconv.FormatInt(s.(config.Messages).User_id, 10) + "]撤回消息" + "\n" + M.Data.Message_type
 	}
+
 	return st
 }
 
+// 群聊
 func (g *Group) MessageDeal(s any) string {
+	g.gh.receive(s)
+
 	return ""
 }
 

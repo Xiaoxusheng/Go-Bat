@@ -20,7 +20,14 @@ type Messages struct {
 	Sender       *Sender `json:"sender,omitempty"`
 	Notice_type  string  `json:"notice_type,omitempty"`
 	Operator_id  int64   `json:"operator_id,omitempty"`
+	Group_id     int64   `json:"group_id,omitempty"`
+	Group_name   string  `json:"group_name,omitempty"`
+	Group_memo   string  `json:"group_memo,omitempty"`
 }
+
+/*
+{"post_type":"message","message_type":"group","time":1688259987,"self_id":2673893724,"sub_type":"normal","message_seq":2912,"user_id":3096407768,"anonymous":null,"font":0,"group_id":682671449,"message":"[CQ:at,qq=2044139249] 禁言10分钟","raw_message":"[CQ:at,qq=2044139249] 禁言10分钟",
+"sender":{"age":0,"area":"","card":"","level":"","nickname":"Ra","role":"member","sex":"unknown","title":"","user_id":3096407768},"message_id":1826682242}*/
 
 type Sender struct {
 	Age     int64  `json:"age,omitempty"`

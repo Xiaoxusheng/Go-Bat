@@ -42,7 +42,7 @@ func (cl *collyBaidu) crawler() string {
 	c.OnRequest(func(r *colly.Request) {
 		fmt.Println("请求之前回调:", r.URL.String())
 	})
-	file, err := os.OpenFile("./config/"+time.Now().Format("2006-01-02")+".txt", os.O_RDWR|os.O_CREATE, 0755)
+	file, err := os.OpenFile("./config/"+time.Now().Format("2006-01-02")+".txt", os.O_APPEND|os.O_CREATE, 0644)
 	if err != nil {
 		log.Panicln("创建hot.txt出错" + err.Error())
 	}
