@@ -14,7 +14,7 @@
   - [x] 定时消息推送：( 定时|QQ账号|hello,world)
   - [x] 学习通课表提送功能 (必须含有关键字课表)
   - [x] 私人消息防撤回
-  - [] 自动同意添加好友
+  - [ ] 自动同意添加好友
 - [ ] 群聊
   - [x] 撤回消息
   - [x] 聊天（与chatgpt聊天）
@@ -80,20 +80,28 @@
 
 ### 3.配置在config.ymal
 
-    #redis
-    redis:
-      password: ""  #redis密码
-      addr: "127.0.0.1:6379"  #redis地址
+   #redis
+   redis:
+     password: ""  #redis密码
+     addr: ""  #redis地址
+     db: 0
+     poolsize: 1000
 
-    #模式
-    mode:
-      mode: "T" #模式
-      bat: false #聊天机器人默认为关闭
-      recall : false  #防撤回默认为关闭
+   #模式
+   mode:
+     mode: "p" #模式  #图片模式
+     bat: false #聊天机器人默认为关闭
+     recall: true  #防撤回默认为关闭
 
-    #服务器
-    serve:
-      port: 5000  #服务器端口
-      ws: 5700   #websocket端口
+   #服务器
+   serve:
+     port: 5000  #服务器端口
+     ws: 5700   #websocket端口
+
+   #chaoxing
+   chaoXing:
+     name: ""  #学习通注册的手机号
+     password: ""  #密码
+
 
 ### 4.声明 练手学习使用，无其他用途
