@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -58,7 +59,7 @@ func (bat *GoBat) Deal(mess config.Messages) {
 	//redis记录人数
 	ctx := context.Background()
 	config.Rdb.Set(ctx, strconv.FormatInt(mess.User_id, 10), mess.Message, time.Minute*10)
-	fmt.Println("聊天人数：", len(config.Rdb.Keys(ctx, "*").Val()))
+	log.Println("聊天人数：", len(config.Rdb.Keys(ctx, "*").Val()))
 	go func() {
 		for {
 			select {

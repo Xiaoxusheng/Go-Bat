@@ -137,9 +137,11 @@ func (p *Private) MessageDeal(s any) string {
 				if err != nil {
 					log.Panicln("读取出错" + err.Error())
 				}
-				st = string(file)
-				k = true
-				break
+				if string(file) != "" {
+					st = string(file)
+					k = true
+					break
+				}
 			}
 		}
 		if k {

@@ -3,7 +3,6 @@ package message
 import (
 	"Go-Bat/abstraction"
 	"Go-Bat/config"
-	"fmt"
 	"github.com/gorilla/websocket"
 	"io"
 	"log"
@@ -61,7 +60,7 @@ func (b *GoBat) websocket(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			continue
 		}
-		fmt.Println("解析mess", Mess)
+		log.Println("解析mess", Mess)
 		MessageChan <- Mess
 		Mess = config.Messages{}
 		log.Println("送到通道", "chan还剩", 100-len(MessageChan))

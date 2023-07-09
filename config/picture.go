@@ -82,7 +82,7 @@ func (p *Picture) CreatePicture(strs string) {
 			log.Panicln(err)
 		}
 		//内容字体
-		face, err := gg.LoadFontFace("./config/lishu.ttf", 50)
+		face, err := gg.LoadFontFace("./config/lishu.ttf", 30)
 		if err != nil {
 			log.Panicln(err)
 		}
@@ -93,6 +93,8 @@ func (p *Picture) CreatePicture(strs string) {
 			return
 		}
 		dc := gg.NewContextForImage(img)
+
+		//水印颜色
 		dc.SetColor(color.RGBA{249, 251, 231, 150})
 		dc.SetFontFace(f)
 
@@ -106,7 +108,7 @@ func (p *Picture) CreatePicture(strs string) {
 		}
 		//内容
 		dc.SetFontFace(face)
-		dc.SetHexColor("#E21818")
+		dc.SetHexColor("#F1F6F9")
 		wd, _ := dc.MeasureString(str)
 		if wd < 1900 {
 			//不满1行
@@ -134,7 +136,6 @@ func (p *Picture) CreatePicture(strs string) {
 
 			}
 			for i, s := range list {
-				fmt.Println(i, s)
 				if i == 0 {
 					dc.DrawString(s, 40, 80+float64(i)*h)
 					continue

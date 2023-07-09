@@ -14,7 +14,7 @@ type timing struct {
 
 func (t *timing) Time() {
 	now := time.Now()
-	nextDay := time.Date(now.Year(), now.Month(), now.Day()+1, now.Hour(), now.Minute(), now.Second(), 0, now.Location()).Sub(now)
+	nextDay := time.Date(now.Year(), now.Month(), now.Day()+1, 8, 0, now.Second(), 0, now.Location()).Sub(now)
 	//创建*Time
 	timer := time.NewTimer(nextDay)
 	fmt.Println("开始")
@@ -25,7 +25,7 @@ func (t *timing) Time() {
 			case <-timer.C:
 				//重置
 				now = time.Now()
-				nextDay = time.Date(now.Year(), now.Month(), now.Day()+1, now.Hour(), now.Minute(), now.Second(), 0, now.Location()).Sub(now)
+				nextDay = time.Date(now.Year(), now.Month(), now.Day()+1, 8, 0, now.Second(), 0, now.Location()).Sub(now)
 				_ = timer.Reset(nextDay)
 				config.SendChan <- t.Message
 			}

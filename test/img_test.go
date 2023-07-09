@@ -18,7 +18,7 @@ func Test_img(t *testing.T) {
 	var s string
 	list := make([]string, 0)
 	// 判断文件是否存在
-	if _, err := os.Stat("../config/t.png"); err != nil {
+	if _, err := os.Stat("../config/tr.png"); err != nil {
 		//不存在
 		fmt.Println("不存在")
 		width := 1960
@@ -26,7 +26,7 @@ func Test_img(t *testing.T) {
 		times := time.Now().Format("2006-01-02 15:04:05")
 		fmt.Println(times)
 		dc := gg.NewContext(width, height)
-		dc.SetHexColor("#E1AEFF")
+		dc.SetHexColor("#FF8B13")
 		dc.DrawRectangle(0, 0, float64(width), float64(height))
 		dc.Fill()
 		//字体

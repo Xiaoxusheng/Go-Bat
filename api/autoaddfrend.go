@@ -15,6 +15,7 @@ type AutoFriend struct {
 	Remark  string `json:"remark,omitempty"`
 }
 
+// 自动舔加好友
 // {"post_type":"request","request_type":"friend","time":1679386108,"self_id":2673893724,"user_id":1978150028,"comment":"信息","flag":"1679386108000000"}
 func (a *AutoFriend) auto(f any) {
 	marshal, err := json.Marshal(AutoFriend{Flag: f.(AutoFriend).Flag, Approve: true, Remark: f.(AutoFriend).Remark})
