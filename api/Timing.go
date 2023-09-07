@@ -12,7 +12,7 @@ type timing struct {
 	Private string
 }
 
-func (t *timing) Time() {
+func (t *timing) Time(s config.Messages) {
 	now := time.Now()
 	nextDay := time.Date(now.Year(), now.Month(), now.Day()+1, 8, 0, now.Second(), 0, now.Location()).Sub(now)
 	//创建*Time
@@ -27,7 +27,13 @@ func (t *timing) Time() {
 				now = time.Now()
 				nextDay = time.Date(now.Year(), now.Month(), now.Day()+1, 8, 0, now.Second(), 0, now.Location()).Sub(now)
 				_ = timer.Reset(nextDay)
-				config.SendChan <- t.Message
+				config.SendChan <- config.SendMessage{
+					UserId:      s.UserId,
+					GroupId:     s.GroupId,
+					Message:     "",
+					MessageType: s.MessageType,
+					AutoEscape:  false,
+				}
 			}
 		}
 	}()

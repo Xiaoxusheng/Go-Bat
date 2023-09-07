@@ -1,30 +1,18 @@
 package message
 
 import (
-	"Go-Bat/abstraction"
 	"Go-Bat/config"
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"github.com/gorilla/websocket"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
-	"sync"
 	"time"
 )
-
-type Message interface {
-
-	// 接收消息
-	websocket(w http.ResponseWriter, r *http.Request)
-	//	开始监听消息
-	Start()
-	//	已读消息
-	read()
-	// 服务
-	Serve(Gobat *abstraction.GoBat)
-	//
-}
 
 type GoBat struct {
 	name    string
@@ -32,10 +20,8 @@ type GoBat struct {
 	time    string
 }
 
-var once sync.Once
-var bat *GoBat
 var Mess config.Messages
-var MessageChan = make(chan config.Messages, 100)
+
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  4096,
 	WriteBufferSize: 4096,
@@ -43,14 +29,13 @@ var upgrader = websocket.Upgrader{
 
 // 创建对象
 func NewGoBat() *GoBat {
-	once.Do(func() {
-		bat = &GoBat{name: "Go-Bat", version: 0.2, time: time.Now().Format("2006-01-02 15:04:05")}
-	})
-	return bat
+
+	return &GoBat{name: "Go-Bat", version: 0.2, time: time.Now().Format("2006-01-02 15:04:05")}
+
 }
 
 // websocket异步监听消息，通过chan传递消息
-func (b *GoBat) websocket(w http.ResponseWriter, r *http.Request) {
+func (b *GoBat) Websocket(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
@@ -60,17 +45,82 @@ func (b *GoBat) websocket(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			continue
 		}
-		log.Println("解析mess", Mess)
-		MessageChan <- Mess
+		log.Println("解析mess", Mess.PostType)
+		if Mess.PostType == "meta_event" {
+			log.Println("chan还剩", 100-len(config.MessageChan))
+			Mess = config.Messages{}
+			continue
+		}
+		config.MessageChan <- Mess
 		Mess = config.Messages{}
-		log.Println("送到通道", "chan还剩", 100-len(MessageChan))
-
 	}
 
 }
 
 // Start 开始监听
 func (b *GoBat) Start() {
+	//启动websocket服务
+	go b.Service()
+	//	启动读协程
+	go b.ReadMessage()
+	//	启动写协程
+	go b.WriteMessage()
+	select {}
+}
+
+// 读取
+func (b *GoBat) ReadMessage() {
+	//读取管道消息
+	ctx := NewZBat()
+	ctx.Tactics()
+	for {
+		select {
+		case c := <-config.MessageChan:
+			//已读消息
+			b.Read(c)
+			ctx.Deal(c)
+			// 如果MessageChan成功读到数据，则进行该case处理语句
+			log.Println("收到Mess", c, "\n", "还剩", 100-len(config.MessageChan), c.MessageId)
+		}
+	}
+}
+
+// 写
+func (b *GoBat) WriteMessage() {
+	for {
+		select {
+		case c := <-config.SendChan:
+			if c.UserId == 0 {
+				c.UserId = 3096407768
+				c.MessageType = "private"
+			}
+			fmt.Println("读取到数据", c.Message)
+
+			go func() {
+				fmt.Println("发送", c)
+				marshal, err := json.Marshal(c)
+				if err != nil {
+					panic(err)
+				}
+				resp, err := http.Post("http://127.0.0.1:"+strconv.Itoa(config.K.Server.Port)+"/send_msg", "application/json", bytes.NewBuffer(marshal))
+				if err != nil {
+					panic(err)
+				}
+				all, err := io.ReadAll(resp.Body)
+				if err != nil {
+					return
+				}
+				fmt.Println("res", string(all))
+				resp.Body.Close()
+				log.Println("发送成功")
+			}()
+		}
+	}
+}
+
+// 服务
+func (b *GoBat) Service() {
+	//记录日志
 	logFile, err := os.OpenFile("GoBat.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
@@ -79,47 +129,19 @@ func (b *GoBat) Start() {
 	// 创建一个 Logger 对象，同时输出到文件和控制台
 	log.SetOutput(io.MultiWriter(logFile, os.Stderr))
 	log.Printf("[INFO]: %v  v%v  %v", b.name, b.version, "机器人启动")
-	http.HandleFunc("/", b.websocket)
+	http.HandleFunc("/", b.Websocket)
 	err = http.ListenAndServe(":"+strconv.Itoa(config.K.Server.Ws), nil)
 	if err != nil {
 		log.Panicln(err)
 	}
 }
 
-// 接收消息
-func (b *GoBat) Serve(Gobat *abstraction.GoBat) {
-	for {
-		select {
-		case c := <-MessageChan:
-			// 如果MessageChan成功读到数据，则进行该case处理语句
-			log.Println("收到Mess", c, "\n", "还剩", 100-len(MessageChan))
-			if c.Message_type != "" {
-				b.read()
-				Gobat.Deal(c)
-			} else if c.Notice_type != "" {
-				b.read()
-				Gobat.Deal(c)
-			}
-		default:
-			// 如果上面都没有成功，则进入default处理流程
-			continue
-		}
-	}
-}
-
 // 已读消息
-func (b *GoBat) read() {
-	_, err := http.Get("http://127.0.0.1:5000/get_forward_msg?message_id=" + strconv.FormatInt(Mess.Message_id, 10))
+func (b *GoBat) Read(mess config.Messages) {
+	_, err := http.Get("http://127.0.0.1:5000/get_forward_msg?message_id=" + strconv.FormatInt(mess.MessageId, 10))
 	if err != nil {
-		log.Panicln(err)
+		log.Println(err)
 		return
 	}
-}
-
-func (b *GoBat) GetName() string {
-	return b.name
-}
-
-func (b *GoBat) GetVersion() float64 {
-	return b.version
+	log.Println("已读成功")
 }

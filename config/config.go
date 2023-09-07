@@ -8,22 +8,22 @@ import (
 )
 
 type Messages struct {
-	Post_type    string  `json:"post_type,omitempty"`
-	Message_type string  `json:"message_type,omitempty"`
-	Time         int64   `json:"time,omitempty"`
-	Self_id      int64   `json:"self_id,omitempty"`
-	Sub_type     string  `json:"sub_type,omitempty"`
-	Message_id   int64   `json:"message_id,omitempty"`
-	User_id      int64   `json:"user_id,omitempty"`
-	Target_id    int64   `json:"target_id,omitempty"`
-	Message      string  `json:"message,omitempty"`
-	Sender       *Sender `json:"sender,omitempty"`
-	Notice_type  string  `json:"notice_type,omitempty"`
-	Operator_id  int64   `json:"operator_id,omitempty"`
-	Group_id     int64   `json:"group_id,omitempty"`
-	Group_name   string  `json:"group_name,omitempty"`
-	Group_memo   string  `json:"group_memo,omitempty"`
-	Request_type string  `json:"request_type,omitempty"`
+	PostType    string  `json:"post_type,omitempty"`
+	MessageType string  `json:"message_type,omitempty"`
+	Time        int64   `json:"time,omitempty"`
+	SelfId      int64   `json:"self_id,omitempty"`
+	SubType     string  `json:"sub_type,omitempty"`
+	MessageId   int64   `json:"message_id,omitempty"`
+	UserId      int64   `json:"user_id,omitempty"`
+	TargetId    int64   `json:"target_id,omitempty"`
+	Message     string  `json:"message,omitempty"`
+	Sender      *Sender `json:"sender,omitempty"`
+	NoticeType  string  `json:"notice_type,omitempty"`
+	OperatorId  int64   `json:"operator_id,omitempty"`
+	GroupId     int64   `json:"group_id,omitempty"`
+	GroupName   string  `json:"group_name,omitempty"`
+	GroupMemo   string  `json:"group_memo,omitempty"`
+	RequestType string  `json:"request_type,omitempty"`
 }
 
 /*
@@ -31,13 +31,23 @@ type Messages struct {
 "sender":{"age":0,"area":"","card":"","level":"","nickname":"Ra","role":"member","sex":"unknown","title":"","user_id":3096407768},"message_id":1826682242}*/
 
 type Sender struct {
-	Age     int64  `json:"age,omitempty"`
-	Sex     string `json:"sex,omitempty"`
-	User_id int64  `json:"user_id,omitempty"`
+	Age    int64  `json:"age,omitempty"`
+	Sex    string `json:"sex,omitempty"`
+	UserId int64  `json:"user_id,omitempty"`
+}
+
+type SendMessage struct {
+	UserId      int64  `json:"user_id"`
+	GroupId     int64  `json:"group_id"`
+	Message     string `json:"message"`
+	MessageType string `json:"message_type"`
+	AutoEscape  bool   `json:"auto_escape"`
 }
 
 // 处理完数据的管道
-var SendChan = make(chan string, 100)
+var SendChan = make(chan SendMessage, 100)
+var PicterChan = make(chan SendMessage, 10)
+var MessageChan = make(chan Messages, 100)
 
 type Config struct {
 	Server struct {
@@ -62,6 +72,85 @@ type Config struct {
 	}
 }
 
+type Class struct {
+	Result int         `json:"result"`
+	Msg    interface{} `json:"msg"`
+	Data   struct {
+		Curriculum struct {
+			Fid                   int         `json:"fid"`
+			RealCurrentWeek       int         `json:"realCurrentWeek"`
+			CourseTypeName        interface{} `json:"courseTypeName"`
+			EarlyMorningTime      interface{} `json:"earlyMorningTime"`
+			FirstWeekDateReal     int64       `json:"firstWeekDateReal"`
+			UserFid               int         `json:"userFid"`
+			Uuid                  string      `json:"uuid"`
+			SectionTime           interface{} `json:"sectionTime"`
+			Puid                  int         `json:"puid"`
+			EarlyMorningSection   interface{} `json:"earlyMorningSection"`
+			LessonLength          int         `json:"lessonLength"`
+			CurriculumCount       int         `json:"curriculumCount"`
+			MorningTime           interface{} `json:"morningTime"`
+			SchoolYear            string      `json:"schoolYear"`
+			CurrentWeek           int         `json:"currentWeek"`
+			Id                    int         `json:"id"`
+			IsHasEduLesson        int         `json:"isHasEduLesson"`
+			AfternoonTime         interface{} `json:"afternoonTime"`
+			ExistMaxLength        int         `json:"existMaxLength"`
+			MorningSection        interface{} `json:"morningSection"`
+			GetLessonFromCache    int         `json:"getLessonFromCache"`
+			MaxWeek               int         `json:"maxWeek"`
+			UpdateTime            int64       `json:"updateTime"`
+			Sort                  int         `json:"sort"`
+			UserName              string      `json:"userName"`
+			FirstWeekDate         int64       `json:"firstWeekDate"`
+			InsertTime            int64       `json:"insertTime"`
+			BreakTime             interface{} `json:"breakTime"`
+			EveningSection        interface{} `json:"eveningSection"`
+			AfternoonSection      interface{} `json:"afternoonSection"`
+			EveningTime           interface{} `json:"eveningTime"`
+			Semester              int         `json:"semester"`
+			MaxLength             int         `json:"maxLength"`
+			LessonTimeConfigArray []string    `json:"lessonTimeConfigArray"`
+		} `json:"curriculum"`
+		LessonArray []struct {
+			Fid                int         `json:"fid"`
+			Role               int         `json:"role"`
+			Weeks              string      `json:"weeks"`
+			NoteCid            interface{} `json:"noteCid"`
+			MeetCode           interface{} `json:"meetCode"`
+			OnlineLocation     interface{} `json:"onlineLocation"`
+			MoocMirrorDomain   interface{} `json:"moocMirrorDomain"`
+			BeginNumber        int         `json:"beginNumber"`
+			LessonConfigId     string      `json:"lessonConfigId"`
+			ClassName          string      `json:"className"`
+			ClassId            int         `json:"classId"`
+			DayOfWeek          int         `json:"dayOfWeek"`
+			CourseId           int         `json:"courseId"`
+			TeachPlanName      interface{} `json:"teachPlanName"`
+			IsMirror           int         `json:"isMirror"`
+			TeacherName        string      `json:"teacherName"`
+			Length             int         `json:"length"`
+			WeekType           int         `json:"weekType"`
+			LessonId           string      `json:"lessonId"`
+			UnitNoteUrl        interface{} `json:"unitNoteUrl"`
+			ShowTeachPlan      interface{} `json:"showTeachPlan"`
+			UpdateTime         int64       `json:"updateTime"`
+			DailyLessonNoteCid interface{} `json:"dailyLessonNoteCid"`
+			TeacherNo          string      `json:"teacherNo"`
+			LessonConfigUuid   string      `json:"lessonConfigUuid"`
+			TeachPlanId        interface{} `json:"teachPlanId"`
+			CourseNoteCid      interface{} `json:"courseNoteCid"`
+			CourseNo           string      `json:"courseNo"`
+			Name               string      `json:"name"`
+			ClassNo            string      `json:"classNo"`
+			EducationalNo      interface{} `json:"educationalNo"`
+			PersonId           interface{} `json:"personId"`
+			Location           string      `json:"location"`
+			PptObjectId        interface{} `json:"pptObjectId"`
+		} `json:"lessonArray"`
+	} `json:"data"`
+}
+
 var K = Config{}
 
 func init() {
@@ -72,13 +161,13 @@ func init() {
 	}
 	viper.SetDefault("server.port", 5000)
 	viper.SetDefault("server.ws", 5700)
-	viper.SetDefault("redis.addr", "116.198.44.154:6379")
+	viper.SetDefault("redis.addr", "127.0.0.1:6379")
 	viper.SetDefault("mode.mode", "T")
 	viper.SetDefault("redis.poolSize", 1000)
 	viper.SetDefault("redis.db", 0)
 	viper.SetDefault("redis.password", "admin")
 	viper.SetDefault("mode.bat", false)
-	viper.SetDefault("mode.recall", false)
+	viper.SetDefault("mode.recall", true)
 	viper.SetDefault("chaoXing.name", "19888340365")
 	viper.SetDefault("chaoXing.password", "admin123")
 

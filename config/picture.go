@@ -19,7 +19,6 @@ func (p *Picture) CreatePicture(strs string) {
 	t := time.Now()
 	str := strings.ReplaceAll(strs, "\t", "")
 	str = strings.ReplaceAll(str, "\n", "")
-	str = strings.ReplaceAll(str, "   ", "")
 	var width float64
 	var s string
 	list := make([]string, 0)
@@ -60,7 +59,6 @@ func (p *Picture) CreatePicture(strs string) {
 
 		dc.SetColor(color.RGBA{249, 251, 231, 150})
 		dc.SetFontFace(f)
-
 		rand.Seed(time.Now().UnixMicro())
 		for i := 0; i < 10; i++ {
 			fmt.Println()
@@ -73,10 +71,8 @@ func (p *Picture) CreatePicture(strs string) {
 		if err != nil {
 			log.Panicln(err)
 		}
-
 	} else {
 		//图片存在
-
 		img, err := gg.LoadImage("./config/t.png")
 		if err != nil {
 			log.Panicln(err)
@@ -148,10 +144,12 @@ func (p *Picture) CreatePicture(strs string) {
 			log.Panicln(err)
 			return
 		}
-		dc.SetHexColor("#27374D")
-		//时间字体
-		dc.SetFontFace(h)
-		dc.DrawStringAnchored(times, 210, float64(1080-70), 0.5, 0.5)
+		go func() {
+			dc.SetHexColor("#27374D")
+			//时间字体
+			dc.SetFontFace(h)
+			dc.DrawStringAnchored(times, 210, float64(1080-70), 0.5, 0.5)
+		}()
 		err = dc.SavePNG("./config/f.png")
 		if err != nil {
 			log.Panicln(err)

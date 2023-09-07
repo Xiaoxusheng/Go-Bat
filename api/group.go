@@ -46,7 +46,7 @@ func (g *GroupList) receive(s any) {
 		time = 60 * parseUint
 	}
 	fmt.Println("时间", time)
-	g.ban(GroupList{s.(config.Messages).Group_id, parseInt, uint32(time), "", "", ""})
+	g.ban(GroupList{s.(config.Messages).GroupId, parseInt, uint32(time), "", "", ""})
 
 }
 

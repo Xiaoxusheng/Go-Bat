@@ -22,9 +22,8 @@ func init() {
 	if ping.String() == "ping: PONG" {
 		log.Println("连接redis 成功!")
 		Rdb = client
+		return
 	}
 	log.Println("连接redis失败")
-
-	//panic("连接失败")
 
 }

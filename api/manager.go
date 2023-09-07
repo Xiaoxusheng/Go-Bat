@@ -12,8 +12,8 @@ import (
 
 type manager struct {
 	Data struct {
-		Message_type string `json:"message_type,omitempty"`
-		Message      string `json:"message,omitempty"`
+		MessageType string `json:"message_type,omitempty"`
+		Message     string `json:"message,omitempty"`
 	}
 	Status string `json:",omitempty"`
 }
@@ -26,7 +26,7 @@ var M = manager{}
 
 // 防撤回
 func (m *manager) preventRecall(c config.Messages) {
-	res, err := http.Get("http://127.0.0.1:5000/get_msg" + "?message_id=" + strconv.FormatInt(c.Message_id, 10))
+	res, err := http.Get("http://127.0.0.1:5000/get_msg" + "?message_id=" + strconv.FormatInt(c.MessageId, 10))
 	if err != nil {
 		log.Panicln(err)
 	}
