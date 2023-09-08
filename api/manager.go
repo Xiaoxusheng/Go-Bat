@@ -44,3 +44,11 @@ func (m *manager) preventRecall(c config.Messages) {
 	fmt.Println("m", M)
 
 }
+
+// 撤回消息
+func (m *manager) ban(c config.Messages) {
+	_, err := http.Get("http://127.0.0.1:5000/delete_msg" + "?message_id=" + strconv.FormatInt(c.MessageId, 10))
+	if err != nil {
+		log.Panicln(err)
+	}
+}

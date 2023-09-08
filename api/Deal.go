@@ -48,27 +48,34 @@ type Picture struct {
 
 // 文字
 func (t *Text) Controls(s config.Messages) {
+	fmt.Println("8fjj", s.NoticeType, s.MessageType == "group")
 	if s.MessageType == "private" || s.NoticeType != "" {
 		t.m = new(Private)
+		t.m.MessageDeal(s, "t")
 	} else if s.MessageType == "group" {
 		t.m = new(Group)
+		t.m.MessageDeal(s, "t")
 	} else {
 		t.m = new(Other)
+		t.m.MessageDeal(s, "t")
 	}
-	t.m.MessageDeal(s, "t")
 }
 
 // 图片
 func (p *Picture) Controls(s config.Messages) {
-	if s.MessageType == "private" || s.NoticeType != "" {
+	fmt.Println("8fjj", s.NoticeType, s.MessageType == "group")
+	if s.MessageType == "private" || s.NoticeType == "friend_recall" {
 		p.m = new(Private)
+		p.m.MessageDeal(s, "p")
 	} else if s.MessageType == "group" {
 		p.m = new(Group)
+		p.m.MessageDeal(s, "p")
 	} else if s.PostType == "request" {
 		//好友添加
 		p.m = new(Other)
+		p.m.MessageDeal(s, "p")
 	}
-	p.m.MessageDeal(s, "p")
+
 	go func() {
 		for {
 			select {
@@ -154,7 +161,6 @@ func (p *Private) MessageDeal(s config.Messages, m string) {
 	}
 	//消息防撤回
 	if s.NoticeType == "friend_recall" && config.K.Mode.Recall {
-		fmt.Println("防止")
 		p.m.preventRecall(s)
 		fmt.Println("p.m.c.Message", M.Data.Message)
 		message.Message = "[CQ:at," + "qq=" + strconv.FormatInt(s.UserId, 10) + "]  撤回消息" + "\n" + M.Data.Message
@@ -197,7 +203,15 @@ func (g *Group) MessageDeal(s config.Messages, m string) {
 			fmt.Println("p.m.c.Message", M.Data.Message)
 			messages.Message = "[CQ:at," + "qq=" + strconv.FormatInt(s.UserId, 10) + "]撤回消息" + "\n" + M.Data.Message
 		}
-
+		//	撤回消息
+		if strings.Contains(s.Message, "撤回") {
+			uid := s.MessageId
+			s.MessageId, _ = strconv.ParseInt(s.Message[strings.Index(s.Message, "=")+1:strings.Index(s.Message, "]")], 10, 64)
+			fmt.Println("s.message", s.MessageId)
+			g.m.ban(s)
+			s.MessageId = uid
+			g.m.ban(s)
+		}
 	} else {
 		messages.Message = "您没有权限"
 	}
@@ -209,7 +223,9 @@ func (g *Group) MessageDeal(s config.Messages, m string) {
 		config.SendChan <- messages
 		return
 	}
-
+	if messages.Message == "" {
+		return
+	}
 	config.PicterChan <- messages
 }
 
