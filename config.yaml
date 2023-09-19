@@ -1,15 +1,15 @@
 #redis
 redis:
   password: "admin123"  #redis密码
-  addr: "116.198.44.154:6379"  #redis地址
+  addr: "127.0.0.1:6379"  #redis地址
   db: 0
   poolsize: 1000
 
 #模式
 mode:
-  mode: "p" #模式
+  mode: "P" #模式
   bat: false #聊天机器人默认为关闭
-  recall: true  #防撤回默认为关闭
+  recall: true  #防撤回默认为打开
 
 #服务器
 serve:
@@ -18,7 +18,7 @@ serve:
 
 #chaoxing
 chaoXing:
-  name: "19888340365"  #学习通手机号
-  password: "lei125608"  #密码
+  name: ""  #学习通手机号
+  password: ""  #密码
 
 

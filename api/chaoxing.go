@@ -62,7 +62,7 @@ func (c *class) GetClass() string {
 		log.Println("json解析失败")
 		return ""
 	}
-	str := "第" + strconv.Itoa(class.Result) + "周课表\n" + "本周共[" + strconv.Itoa(class.Data.Curriculum.CurriculumCount) + "]节课\n"
+	str := "第" + strconv.Itoa(class.Data.Curriculum.CurrentWeek) + "周课表\n" + "本周共[" + strconv.Itoa(class.Data.Curriculum.CurriculumCount) + "]节课\n"
 
 	for i := 0; i < len(class.Data.LessonArray); i++ {
 		str += "星期" + strconv.Itoa(class.Data.LessonArray[i].DayOfWeek) + "\n" + "课程名称: " + class.Data.LessonArray[i].ClassName + "\n" + "上课地点: " + class.Data.LessonArray[i].Location + "\n" +
@@ -76,7 +76,7 @@ func (c *class) GetClass() string {
 func (c *class) set() string {
 	//c.w不存在时，默认为当前周
 	if c.w == 0 {
-		c.w = int64(math.Ceil(float64((time.Now().Unix()-time.Date(time.Now().Year(), 9, 1, 0, 0, 0, 0, time.Local).Unix())/(7*60*60*24)))) + 1
+		c.w = int64(math.Ceil(float64((time.Now().Unix()-time.Date(time.Now().Year(), 9, 4, 0, 0, 0, 0, time.Local).Unix())/(7*60*60*24)))) + 1
 		fmt.Println(c.w)
 	}
 	c.getCookie()
@@ -116,7 +116,8 @@ func (c *class) set() string {
 func (c *class) SetTime() {
 	log.Println("定时任务启动中")
 	t1 := time.Now()
-	t2 := time.Date(t1.Year(), t1.Month(), t1.Day()+1, 7, 0, 0, 0, t1.Location())
+	t2 := time.Date(t1.Year(), t1.Month(), t1.Day(), t1.Hour(), t1.Minute()+1, 0, 0, t1.Location())
+	log.Println("任务在" + t2.Sub(t1).String() + "秒后启动")
 	t3 := time.NewTicker(t2.Sub(t1))
 	for {
 		select {
@@ -129,6 +130,7 @@ func (c *class) SetTime() {
 			}
 			t1 = time.Now()
 			t2 = time.Date(t1.Year(), t1.Month(), t1.Day()+1, 7, 0, 0, 0, t1.Location())
+			t3 = time.NewTicker(t2.Sub(t1))
 		}
 	}
 

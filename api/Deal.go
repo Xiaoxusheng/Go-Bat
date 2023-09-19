@@ -22,6 +22,7 @@ type Private struct {
 	m       manager
 	t       timing
 	c       collyBaidu
+	d       Ddns
 }
 
 // 群聊
@@ -105,6 +106,16 @@ func (p *Private) MessageDeal(s config.Messages, m string) {
 		MessageType: s.MessageType,
 		AutoEscape:  false,
 	}
+	if strings.Contains(s.Message, "更新ip") && s.UserId == 3096407768 {
+		ok := p.d.Times()
+		if ok {
+			message.Message = "更新成功"
+			return
+		}
+		message.Message = "更新失败"
+
+	}
+
 	if strings.Contains(s.Message, "定时") {
 		//str := strings.Split(strings.ReplaceAll(s.(config.Messages).Message, "  ", ""), "|")
 		//要发送的 消息
@@ -195,9 +206,11 @@ func (g *Group) MessageDeal(s config.Messages, m string) {
 		AutoEscape:  false,
 	}
 	if s.UserId == 3096407768 {
+		//禁言
 		if strings.Contains(s.Message, "禁言") {
 			g.gh.receive(s)
 		}
+		//防撤回
 		if s.NoticeType == "group_recall" && s.OperatorId == s.UserId && config.K.Mode.Recall {
 			g.m.preventRecall(s)
 			fmt.Println("p.m.c.Message", M.Data.Message)

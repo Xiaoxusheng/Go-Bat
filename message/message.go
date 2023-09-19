@@ -29,9 +29,7 @@ var upgrader = websocket.Upgrader{
 
 // 创建对象
 func NewGoBat() *GoBat {
-
-	return &GoBat{name: "Go-Bat", version: 0.2, time: time.Now().Format("2006-01-02 15:04:05")}
-
+	return &GoBat{name: "Go-Bat", version: 0.4, time: time.Now().Format("2006-01-02 15:04:05")}
 }
 
 // websocket异步监听消息，通过chan传递消息
@@ -59,6 +57,7 @@ func (b *GoBat) Websocket(w http.ResponseWriter, r *http.Request) {
 
 // Start 开始监听
 func (b *GoBat) Start() {
+	b.Err()
 	//启动websocket服务
 	go b.Service()
 	//	启动读协程
@@ -90,7 +89,7 @@ func (b *GoBat) WriteMessage() {
 	for {
 		select {
 		case c := <-config.SendChan:
-			if c.UserId == 0 {
+			if c.UserId == 0 && c.GroupId == 0 {
 				c.UserId = 3096407768
 				c.MessageType = "private"
 			}
@@ -118,6 +117,28 @@ func (b *GoBat) WriteMessage() {
 	}
 }
 
+// 已读消息
+func (b *GoBat) Read(mess config.Messages) {
+	_, err := http.Get("http://127.0.0.1:5000/get_forward_msg?message_id=" + strconv.FormatInt(mess.MessageId, 10))
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	log.Println("已读成功")
+}
+
+func (b *GoBat) Err() {
+	defer func() {
+		if err := recover(); err != nil {
+			config.SendChan <- config.SendMessage{
+				UserId:     3096407768,
+				Message:    err.(string),
+				AutoEscape: false,
+			}
+		}
+	}()
+}
+
 // 服务
 func (b *GoBat) Service() {
 	//记录日志
@@ -134,14 +155,4 @@ func (b *GoBat) Service() {
 	if err != nil {
 		log.Panicln(err)
 	}
-}
-
-// 已读消息
-func (b *GoBat) Read(mess config.Messages) {
-	_, err := http.Get("http://127.0.0.1:5000/get_forward_msg?message_id=" + strconv.FormatInt(mess.MessageId, 10))
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	log.Println("已读成功")
 }

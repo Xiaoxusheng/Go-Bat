@@ -16,4 +16,6 @@ type GoBat interface {
 	ReadMessage()
 	//	已读消息
 	Read(mess config.Messages)
+	//	监听全局错误
+	Err()
 }
