@@ -46,8 +46,17 @@ type SendMessage struct {
 
 // 处理完数据的管道
 var SendChan = make(chan SendMessage, 100)
+
+// 生成图片管道
 var PicterChan = make(chan SendMessage, 10)
+
+// 接收消息管道
 var MessageChan = make(chan Messages, 100)
+
+// 要已读数据管道
+var ReadChan = make(chan int64, 10)
+
+var ErrChan = make(chan string)
 
 type Config struct {
 	Server struct {
@@ -62,13 +71,17 @@ type Config struct {
 		PoolSize int
 	}
 	Mode struct {
-		Mode   string
-		Bat    bool
-		Recall bool
+		Mode    string
+		Bat     bool
+		Recall  bool
+		Chatgpt bool
 	}
 	ChaoXing struct {
 		Name     string
 		Password string
+	}
+	Bat struct {
+		QQ int64
 	}
 }
 
@@ -151,13 +164,33 @@ type Class struct {
 	} `json:"data"`
 }
 
+type Cj struct {
+	Id      string `json:"id"`
+	Object  string `json:"object"`
+	Created int    `json:"created"`
+	Model   string `json:"model"`
+	Choices []struct {
+		Index   int `json:"index"`
+		Message struct {
+			Role    string `json:"role"`
+			Content string `json:"content"`
+		} `json:"message"`
+		FinishReason string `json:"finish_reason"`
+	} `json:"choices"`
+	Usage struct {
+		PromptTokens     int `json:"prompt_tokens"`
+		CompletionTokens int `json:"completion_tokens"`
+		TotalTokens      int `json:"total_tokens"`
+	} `json:"usage"`
+}
+
 var K = Config{}
 
 func init() {
 	viper.SetConfigFile("config.yaml")
 	err := viper.ReadInConfig()
 	if err != nil {
-		log.Panicln(err)
+		log.Println(err)
 	}
 	viper.SetDefault("server.port", 5000)
 	viper.SetDefault("server.ws", 5700)
@@ -168,14 +201,17 @@ func init() {
 	viper.SetDefault("redis.password", "admin")
 	viper.SetDefault("mode.bat", false)
 	viper.SetDefault("mode.recall", true)
+	viper.SetDefault("mode.chatgpt", true)
 	viper.SetDefault("chaoXing.name", "19888340365")
 	viper.SetDefault("chaoXing.password", "admin123")
+	viper.SetDefault("bat.qq", 3096407768)
 
 	err = viper.Unmarshal(&K, func(config *mapstructure.DecoderConfig) {
 
 	})
 	fmt.Println(K)
 	if err != nil {
+		log.Println("初始化失败")
 		return
 	}
 

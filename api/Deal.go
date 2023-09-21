@@ -15,7 +15,7 @@ type mess interface {
 	MessageDeal(s config.Messages, model string)
 }
 
-// 私聊
+// Private 私聊
 type Private struct {
 	class   class
 	chatGpt ChatGpt
@@ -25,23 +25,23 @@ type Private struct {
 	d       Ddns
 }
 
-// 群聊
+// Group 群聊
 type Group struct {
 	gh GroupList
 	m  manager
 }
 
-// 处理其他事件
+// Other 处理其他事件
 type Other struct {
 	a AutoFriend
 }
 
-// 生成文字
+// Text 生成文字
 type Text struct {
 	m mess
 }
 
-// 生成图片
+// Picture 生成图片
 type Picture struct {
 	m mess
 	p config.Picture
@@ -49,7 +49,7 @@ type Picture struct {
 
 // 文字
 func (t *Text) Controls(s config.Messages) {
-	fmt.Println("8fjj", s.NoticeType, s.MessageType == "group")
+	fmt.Println(s.NoticeType, s.MessageType == "group")
 	if s.MessageType == "private" || s.NoticeType != "" {
 		t.m = new(Private)
 		t.m.MessageDeal(s, "t")
@@ -106,7 +106,20 @@ func (p *Private) MessageDeal(s config.Messages, m string) {
 		MessageType: s.MessageType,
 		AutoEscape:  false,
 	}
-	if strings.Contains(s.Message, "更新ip") && s.UserId == 3096407768 {
+
+	if strings.Contains(s.Message, "机器人") && s.UserId == config.K.Bat.QQ {
+		config.K.Mode.Chatgpt = !config.K.Mode.Chatgpt
+		s := ""
+		if config.K.Mode.Chatgpt {
+			s = "打开"
+		} else {
+			s = "关闭"
+		}
+		message.Message = s
+
+	}
+
+	if strings.Contains(s.Message, "更新ip") && s.UserId == config.K.Bat.QQ {
 		ok := p.d.Times()
 		if ok {
 			message.Message = "更新成功"
@@ -151,7 +164,7 @@ func (p *Private) MessageDeal(s config.Messages, m string) {
 	}
 
 	if strings.Contains(s.Message, "课表") {
-		if s.UserId != 3096407768 {
+		if s.UserId != config.K.Bat.QQ {
 			message.Message = "您没有权限查看课表"
 			return
 		}
@@ -181,6 +194,15 @@ func (p *Private) MessageDeal(s config.Messages, m string) {
 			m = "t"
 		}
 		message.Message = s.Message
+	}
+
+	if config.K.Mode.Chatgpt && message.Message == "" && !strings.Contains(s.Message, "[CQ:image,") {
+		err := p.chatGpt.Limit(s)
+		if err != "" {
+			message.Message = err
+			return
+		}
+		message.Message = p.chatGpt.GetMessage(s.Message)
 	}
 
 	if m == "t" {

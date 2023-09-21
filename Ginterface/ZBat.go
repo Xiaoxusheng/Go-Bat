@@ -1,6 +1,8 @@
 package Ginterface
 
-import "Go-Bat/config"
+import (
+	"Go-Bat/config"
+)
 
 // 处理事件接口
 // 抽象接口
