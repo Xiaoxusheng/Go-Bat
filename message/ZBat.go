@@ -27,12 +27,12 @@ func (zbat *ZBat) setStrategy(B Ginterface.Bat) {
 func (zbat *ZBat) Deal(mess config.Messages) {
 	//redis记录人数
 	ctx := context.Background()
-	config.Rdb.Set(ctx, strconv.FormatInt(mess.UserId, 10), mess.Message, time.Minute*10)
 	_, err := config.Rdb.HSet(ctx, "chat", strconv.FormatInt(mess.UserId, 10), mess.Message).Result()
 	if err != nil {
 		log.Println(err)
 		return
 	}
+	config.Rdb.Expire(ctx, "chat", time.Minute*10)
 	log.Println("聊天人数：", len(config.Rdb.HGetAll(ctx, "chat").Val()))
 	//处理消息
 	log.Println("处理消息", mess.Message)

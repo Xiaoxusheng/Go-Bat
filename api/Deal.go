@@ -2,6 +2,7 @@ package api
 
 import (
 	"Go-Bat/config"
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -117,6 +118,14 @@ func (p *Private) MessageDeal(s config.Messages, m string) {
 		}
 		message.Message = s
 
+	}
+
+	if strings.Contains(s.Message, "消息数") {
+		if config.Rdb.Get(context.Background(), "num").Val() == "" {
+			message.Message = "已发消息数：0"
+		} else {
+			message.Message = "已发消息数：" + config.Rdb.Get(context.Background(), "num").Val()
+		}
 	}
 
 	if strings.Contains(s.Message, "更新ip") && s.UserId == config.K.Bat.QQ {

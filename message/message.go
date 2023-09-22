@@ -3,6 +3,7 @@ package message
 import (
 	"Go-Bat/config"
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
@@ -111,6 +112,21 @@ func (b *GoBat) WriteMessage() {
 				resp.Body.Close()
 				log.Println("发送成功")
 			}()
+			ctx := context.Background()
+			if config.Rdb.Exists(ctx, "num").Val() == 0 {
+				t1 := time.Now()
+				t2 := time.Date(t1.Year(), t1.Month(), t1.Day()+1, 0, 0, 0, 0, t1.Location())
+				fmt.Println(t2.Sub(t1))
+				_, err := config.Rdb.Set(ctx, "num", 1, t2.Sub(t1)).Result()
+				if err != nil {
+					log.Println(err)
+				}
+			}
+			result, err := config.Rdb.Incr(ctx, "num").Result()
+			if err != nil {
+				log.Println(result, err)
+			}
+
 		}
 	}
 }
@@ -150,12 +166,12 @@ func (b *GoBat) Service() {
 		log.Fatal(err)
 	}
 	defer logFile.Close()
-	// 创建一个 Logger 对象，同时输出到文件和控制台
 	log.SetOutput(io.MultiWriter(logFile, os.Stderr))
-	log.Printf("[INFO]: %v v%v %v", b.name, b.version, "机器人启动")
+	log.Printf("%v v%v %v", b.name, b.version, "机器人启动")
 	http.HandleFunc("/", b.Websocket)
 	err = http.ListenAndServe(":"+strconv.Itoa(config.K.Server.Ws), nil)
 	if err != nil {
-		log.Panicln(err)
+		log.Println(err)
+		return
 	}
 }

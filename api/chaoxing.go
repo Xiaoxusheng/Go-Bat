@@ -20,7 +20,7 @@ type class struct {
 func (c *class) getCookie() {
 	res, err := http.Get("https://passport2.chaoxing.com/api/login?" + "name=" + config.K.ChaoXing.Name + "&pwd=" + config.K.ChaoXing.Password)
 	if err != nil {
-		log.Panicln(err)
+		log.Println(err)
 	}
 	defer res.Body.Close()
 	c.Cookie = res.Cookies()
@@ -41,7 +41,7 @@ func (c *class) GetClass() string {
 	h := http.Client{}
 	req, err := http.NewRequest("GET", "https://kb.chaoxing.com/pc/curriculum/getMyLessons"+"?week="+strconv.FormatInt(c.w, 10), nil)
 	if err != nil {
-		log.Panicln(err)
+		log.Println(err)
 	}
 	for _, cookie := range c.Cookie {
 		req.AddCookie(cookie)
@@ -53,9 +53,9 @@ func (c *class) GetClass() string {
 	defer res.Body.Close()
 	resp, err := io.ReadAll(res.Body)
 	if err != nil {
-		log.Panicln(err)
+		log.Println(err)
 	}
-	fmt.Println(string(resp))
+	//fmt.Println(string(resp))
 	class := config.Class{}
 	err = json.Unmarshal(resp, &class)
 	if err != nil {
@@ -77,13 +77,12 @@ func (c *class) set() string {
 	//c.w不存在时，默认为当前周
 	if c.w == 0 {
 		c.w = int64(math.Ceil(float64((time.Now().Unix()-time.Date(time.Now().Year(), 9, 4, 0, 0, 0, 0, time.Local).Unix())/(7*60*60*24)))) + 1
-		fmt.Println(c.w)
 	}
 	c.getCookie()
 	h := http.Client{}
 	req, err := http.NewRequest("GET", "https://kb.chaoxing.com/pc/curriculum/getMyLessons"+"?week="+strconv.FormatInt(c.w, 10), nil)
 	if err != nil {
-		log.Panicln(err)
+		log.Println(err)
 	}
 	for _, cookie := range c.Cookie {
 		req.AddCookie(cookie)
@@ -95,7 +94,7 @@ func (c *class) set() string {
 	defer res.Body.Close()
 	resp, err := io.ReadAll(res.Body)
 	if err != nil {
-		log.Panicln(err)
+		log.Println(err)
 	}
 	fmt.Println(string(resp))
 	class := config.Class{}
