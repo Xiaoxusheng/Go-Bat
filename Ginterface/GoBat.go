@@ -17,4 +17,6 @@ type GoBat interface {
 	Read()
 	//	监听全局错误
 	Err()
+	//日志文件
+	Log()
 }

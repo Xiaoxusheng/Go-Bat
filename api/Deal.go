@@ -24,6 +24,7 @@ type Private struct {
 	t       timing
 	c       collyBaidu
 	d       Ddns
+	f       File
 }
 
 // Group 群聊
@@ -50,7 +51,6 @@ type Picture struct {
 
 // 文字
 func (t *Text) Controls(s config.Messages) {
-	fmt.Println(s.NoticeType, s.MessageType == "group")
 	if s.MessageType == "private" || s.NoticeType != "" {
 		t.m = new(Private)
 		t.m.MessageDeal(s, "t")
@@ -65,7 +65,6 @@ func (t *Text) Controls(s config.Messages) {
 
 // 图片
 func (p *Picture) Controls(s config.Messages) {
-	fmt.Println("8fjj", s.NoticeType, s.MessageType == "group")
 	if s.MessageType == "private" || s.NoticeType == "friend_recall" {
 		p.m = new(Private)
 		p.m.MessageDeal(s, "p")
@@ -189,6 +188,7 @@ func (p *Private) MessageDeal(s config.Messages, m string) {
 		fmt.Println(" p.class.w:", p.class.w)
 		message.Message = p.class.GetClass()
 	}
+
 	if strings.Contains(s.Message, "元神启动") {
 		go p.class.SetTime()
 	}
@@ -198,11 +198,17 @@ func (p *Private) MessageDeal(s config.Messages, m string) {
 		fmt.Println("p.m.c.Message", M.Data.Message)
 		message.Message = "[CQ:at," + "qq=" + strconv.FormatInt(s.UserId, 10) + "]  撤回消息" + "\n" + M.Data.Message
 	}
+
 	if strings.Contains(s.Message, "CQ:face") || strings.Contains(s.Message, "CQ:image") {
 		if m == "p" {
 			m = "t"
 		}
 		message.Message = s.Message
+	}
+
+	if strings.Contains(s.Message, "日志") && s.UserId == config.K.Bat.QQ {
+		p.f.Upload()
+		return
 	}
 
 	if config.K.Mode.Chatgpt && message.Message == "" && !strings.Contains(s.Message, "[CQ:image,") {
@@ -221,6 +227,7 @@ func (p *Private) MessageDeal(s config.Messages, m string) {
 		config.SendChan <- message
 		return
 	}
+
 	if message.Message == "" {
 		message.Message = s.Message
 	}

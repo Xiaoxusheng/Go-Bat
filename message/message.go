@@ -1,18 +1,20 @@
 package message
 
 import (
-	"Go-Bat/config"
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/websocket"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
+
+	"Go-Bat/config"
+
+	"github.com/gorilla/websocket"
 )
 
 type GoBat struct {
@@ -38,36 +40,23 @@ func (b *GoBat) Websocket(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
+		return
 	}
 	for {
 		err := conn.ReadJSON(&Mess)
 		if err != nil {
 			continue
 		}
-		log.Println("解析mess", Mess.PostType)
 		if Mess.PostType == "meta_event" {
 			log.Println("chan还剩", 100-len(config.MessageChan))
 			Mess = config.Messages{}
 			continue
 		}
+		log.Println("解析mess", Mess.PostType)
 		config.MessageChan <- Mess
 		Mess = config.Messages{}
 	}
 
-}
-
-// Start 开始监听
-func (b *GoBat) Start() {
-	b.Err()
-	//启动websocket服务
-	go b.Service()
-	//	启动读协程
-	go b.ReadMessage()
-	//	启动写协程
-	go b.WriteMessage()
-	//已读消息
-	go b.Read()
-	select {}
 }
 
 // ReadMessage 读取
@@ -96,10 +85,10 @@ func (b *GoBat) WriteMessage() {
 				c.UserId = 3096407768
 				c.MessageType = "private"
 			}
-			fmt.Println("读取到数据", c.Message)
+			log.Println("读取到数据", c.Message)
 
 			go func() {
-				fmt.Println("发送", c)
+				log.Println("发送", c)
 				marshal, err := json.Marshal(c)
 				if err != nil {
 					log.Println(err)
@@ -161,7 +150,7 @@ func (b *GoBat) Err() {
 // Service 服务
 func (b *GoBat) Service() {
 	//记录日志
-	logFile, err := os.OpenFile("GoBat.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	logFile, err := os.OpenFile("./log/"+time.Now().Format(time.DateOnly)+".log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -174,4 +163,41 @@ func (b *GoBat) Service() {
 		log.Println(err)
 		return
 	}
+}
+
+func (b *GoBat) Log() {
+	t1 := time.Now()
+	t2 := time.Date(t1.Year(), t1.Month(), t1.Day()+1, 0, 0, 0, 0, t1.Location())
+	t3 := time.NewTimer(t2.Sub(t1))
+	for {
+		select {
+		case <-t3.C:
+			logFile, err := os.OpenFile("./log/"+time.Now().Format(time.DateOnly)+".log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+			if err != nil {
+				log.Fatal(err)
+			}
+			log.SetOutput(io.MultiWriter(logFile, os.Stderr))
+			t1 = time.Now()
+			//一天以后执行
+			t2 = time.Date(t1.Year(), t1.Month(), t1.Day()+1, 0, 0, 0, 0, t1.Location())
+			t3 = time.NewTimer(t2.Sub(t1))
+			log.Println("任务启动," + t2.Sub(t1).String() + "后开始执行")
+		}
+	}
+}
+
+// Start 开始监听
+func (b *GoBat) Start() {
+	b.Err()
+	//启动websocket服务
+	go b.Service()
+	//	启动读协程
+	go b.ReadMessage()
+	//	启动写协程
+	go b.WriteMessage()
+	//已读消息
+	go b.Read()
+	//记录日志
+	go b.Log()
+	select {}
 }
