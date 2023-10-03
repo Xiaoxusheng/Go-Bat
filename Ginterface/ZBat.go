@@ -5,9 +5,12 @@ import (
 )
 
 // 处理事件接口
-// 抽象接口
 type Bat interface {
 	Controls(s config.Messages)
+}
+
+type Mess interface {
+	MessageDeal(s config.Messages, model string)
 }
 
 type Times interface {

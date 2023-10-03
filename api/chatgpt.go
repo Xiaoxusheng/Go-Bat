@@ -77,6 +77,30 @@ func (c *ChatGpt) GetMessage(message string) string {
 
 }
 
+// 翻译
+//func (c *ChatGpt) Translate() string {
+//	formData := url.Values{}
+//	formData.Set("file", "admin")
+//	formData.Set("model", "whisper-1")
+//	formData.Set("response_format", "json")
+//
+//	res, err := http.NewRequest(http.MethodPost, "https://api.chatanywhere.com.cn/v1/chat/completions", strings.NewReader(string(m)))
+//	if err != nil {
+//		log.Println(err)
+//		return ""
+//	}
+//	res.Header.Set("Content-Type", "multipart/form-data")
+//	res.Header.Set("Authorization", "Bearer "+config.K.Mode.Key)
+//	client := &http.Client{}
+//	resp, err := client.Do(res)
+//	if err != nil {
+//		log.Println(err)
+//		return ""
+//	}
+//	defer resp.Body.Close()
+//
+//}
+
 // //限制
 func (c *ChatGpt) Limit(s config.Messages) string {
 	ctx := context.Background()

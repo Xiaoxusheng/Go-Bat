@@ -1,6 +1,7 @@
 package api
 
 import (
+	"Go-Bat/Ginterface"
 	"Go-Bat/config"
 	"context"
 	"fmt"
@@ -11,10 +12,6 @@ import (
 	"time"
 	"unicode"
 )
-
-type mess interface {
-	MessageDeal(s config.Messages, model string)
-}
 
 // Private 私聊
 type Private struct {
@@ -40,12 +37,12 @@ type Other struct {
 
 // Text 生成文字
 type Text struct {
-	m mess
+	m Ginterface.Mess
 }
 
 // Picture 生成图片
 type Picture struct {
-	m mess
+	m Ginterface.Mess
 	p config.Picture
 }
 
@@ -291,9 +288,13 @@ func (o *Other) MessageDeal(s config.Messages, m string) {
 	}
 	if s.RequestType == "friend" {
 		o.a.auto(s)
+		return
 	}
 	if m == "t" {
 		config.SendChan <- messages
+		return
+	}
+	if messages.Message == "" {
 		return
 	}
 	config.PicterChan <- messages

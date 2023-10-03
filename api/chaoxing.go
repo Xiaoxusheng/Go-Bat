@@ -62,7 +62,7 @@ func (c *class) GetClass() string {
 		log.Println("json解析失败")
 		return ""
 	}
-	str := "第" + strconv.Itoa(class.Data.Curriculum.CurrentWeek) + "周课表\n" + "本周共[" + strconv.Itoa(class.Data.Curriculum.CurriculumCount) + "]节课\n"
+	str := "第" + strconv.Itoa(class.Data.Curriculum.CurrentWeek) + "周课表\n" + "本周共[" + strconv.Itoa(len(class.Data.LessonArray)) + "]节课\n"
 
 	for i := 0; i < len(class.Data.LessonArray); i++ {
 		str += "星期" + strconv.Itoa(class.Data.LessonArray[i].DayOfWeek) + "\n" + "课程名称: " + class.Data.LessonArray[i].ClassName + "\n" + "上课地点: " + class.Data.LessonArray[i].Location + "\n" +

@@ -18,6 +18,15 @@ func NewZBat() *ZBat {
 	return &ZBat{}
 }
 
+// 向外暴露的接口
+func (zbat *ZBat) Tactics() {
+	if config.K.Mode.Mode == "T" {
+		zbat.setStrategy(new(api.Text))
+	} else {
+		zbat.setStrategy(new(api.Picture))
+	}
+}
+
 // 设置策略
 func (zbat *ZBat) setStrategy(B Ginterface.Bat) {
 	zbat.bat = B
@@ -48,13 +57,4 @@ func (zbat *ZBat) Deal(mess config.Messages) {
 		return
 	}
 	zbat.bat.Controls(mess)
-}
-
-// 向外暴露的接口
-func (zbat *ZBat) Tactics() {
-	if config.K.Mode.Mode == "T" {
-		zbat.setStrategy(new(api.Text))
-	} else {
-		zbat.setStrategy(new(api.Picture))
-	}
 }

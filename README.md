@@ -1,28 +1,29 @@
 ## GoBat
+
 ![](config/img_1.png)
 
 ### 基于go-cqhttp与GO语言实现
 
 <img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Go badge"><img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/Xiaoxusheng/Go-Bat"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Xiaoxusheng/Go-Bat"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Xiaoxusheng/Go-Bat"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/Xiaoxusheng/Go-Bat">
 
-
 ### 1 功能如下
+
 - [x] 私聊
-  - [x] 聊天模式：(chat 接入chatgpt)
-  - [x] 百度热榜： (热榜)
-  - [x] 定时消息推送：( 定时|QQ账号|hello,world)
-  - [x] 学习通课表提送功能 (必须含有关键字课表)
-  - [x] 私人消息防撤回
-  - [x] 自动同意添加好友
-  - [x] 可直接收到每天的日志文件
+    - [x] 聊天模式：(chat 接入chatgpt)
+    - [x] 百度热榜： (热榜)
+    - [x] 定时消息推送：( 定时|QQ账号|hello,world)
+    - [x] 学习通课表提送功能 (必须含有关键字课表)
+    - [x] 私人消息防撤回
+    - [x] 自动同意添加好友
+    - [x] 可直接收到每天的日志文件
 - [x] 群聊
-  - [x] 撤回消息
-  - [x] 聊天（与chatgpt聊天）
-  - [x] 群消息防撤回
-  - [x] 禁言群成员，取消禁言 （@群成员 禁言 x 分钟 0代表解除禁言）
-  - [x] 消息防撤回功能的开关（可以自己打开防撤回功能）
-  - [x] 每日发送消息数（零点自动清零）
-  - [x] 群机器人开关功能（机器人关闭，机器人关闭）
+    - [x] 撤回消息
+    - [x] 聊天（与chatgpt聊天）
+    - [x] 群消息防撤回
+    - [x] 禁言群成员，取消禁言 （@群成员 禁言 x 分钟 0代表解除禁言）
+    - [x] 消息防撤回功能的开关（可以自己打开防撤回功能）
+    - [x] 每日发送消息数（零点自动清零）
+    - [x] 群机器人开关功能（机器人关闭，机器人关闭）
 
 ### 2配置 go-cqhttp config.yml
 
@@ -63,7 +64,18 @@
 
 #### 4.服务器启动
 
-    go run main.go 或者 ./GoBat-V0.1
+##### 1. 直接运行
+
+```go
+go run main.go 
+```
+
+##### 2. 打包为二进制文件 ,运行二进制文件
+
+```go
+ go build -o GoBat -ldflags "-s -w"
+./GoBat   enter运行
+```
 
 #### 5.api接口请访问
 
@@ -71,36 +83,49 @@
 
 #### 6.结果
 
-
-
 #### 7.说明：
 
      部署到阿里云或者腾讯云服务器上查询学习通课表无法使用屏蔽了服务器ip，还需要学校支持课表学习通课表
 
-### 3.配置在config.ymal
+### 3.配置文件在config.yaml
 
-       #redis
-       redis:
-         password: ""  #redis密码
-         addr: ""  #redis地址
-         db: 0
-         poolsize: 1000
+```yaml
+#redis
+redis:
+  password: "admin123"  #redis密码
+  addr: "127.0.0.1:6379"  #redis地址
+  db: 0
+  poolsize: 1000
 
-       #模式
-       mode:
-         mode: "p" #模式  #图片模式
-         bat: false #聊天机器人默认为关闭
-         recall: true  #防撤回默认为打开
+#模式
+mode:
+  mode: "T" #模式
+  bat: false #聊天机器人默认为关闭
+  recall: true  #防撤回默认为打开
+  chatgpt: false
+  key: ""  //chatgpt密匙
 
-       #服务器
-       serve:
-         port: 5000  #服务器端口
-         ws: 5700   #websocket端口
+#服务器
+serve:
+  port: 5000  #服务器端口
+  ws: 5700   #websocket端口
 
-       #chaoxing
-       chaoXing:
-         name: ""  #学习通注册的手机号
-         password: ""  #密码
+#chaoxing
+chaoXing:
+  name: ""  #学习通手机号
+  password: ""  #密码
+
+#控制
+bat:
+  qq:  #控制QQ
+
+```
+
+### 4.chatgpt 免费key获取
+
+```txt
+https://github.com/chatanywhere/GPT_API_free
+```
 
 
-### 4.声明 练手学习使用，无其他用途
+### 5.声明 练手学习使用，无其他用途,
