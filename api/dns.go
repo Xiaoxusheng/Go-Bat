@@ -96,7 +96,7 @@ func Set(v4, v6 string) bool {
 	config := sdk.NewConfig()
 
 	// Please ensure that the environment variables ALIBABA_CLOUD_ACCESS_KEY_ID and ALIBABA_CLOUD_ACCESS_KEY_SECRET are set.
-	credential := credentials.NewAccessKeyCredential("LTAI5t5bQFr98Xt7rZeDoS1v", "njW1w12nZQmj5YwFla1WJZMEdPm5XB")
+	credential := credentials.NewAccessKeyCredential("", "")
 	/* use STS Token
 	credential := credentials.NewStsTokenCredential(os.Getenv("ALIBABA_CLOUD_ACCESS_KEY_ID"), os.Getenv("ALIBABA_CLOUD_ACCESS_KEY_SECRET"), os.Getenv("ALIBABA_CLOUD_SECURITY_TOKEN"))
 	*/
