@@ -20,7 +20,7 @@ func NewZBat() *ZBat {
 
 // 向外暴露的接口
 func (zbat *ZBat) Tactics() {
-	if config.K.Mode.Mode == "T" {
+	if config.K.Mode.Modes == "T" {
 		zbat.setStrategy(new(api.Text))
 	} else {
 		zbat.setStrategy(new(api.Picture))

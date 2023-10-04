@@ -81,9 +81,8 @@ go run main.go
 
 [go-cqhttp](https://docs.go-cqhttp.org/)
 
-#### 6.结果
 
-#### 7.说明：
+#### 6.说明
 
      部署到阿里云或者腾讯云服务器上查询学习通课表无法使用屏蔽了服务器ip，还需要学校支持课表学习通课表
 
@@ -129,3 +128,5 @@ https://github.com/chatanywhere/GPT_API_free
 
 
 ### 5.声明 练手学习使用，无其他用途,
+
+### 6 如果您觉得本项目还不错，动动小手点个star

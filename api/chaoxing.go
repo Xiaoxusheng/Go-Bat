@@ -78,6 +78,7 @@ func (c *class) set() string {
 	if c.w == 0 {
 		c.w = int64(math.Ceil(float64((time.Now().Unix()-time.Date(time.Now().Year(), 9, 4, 0, 0, 0, 0, time.Local).Unix())/(7*60*60*24)))) + 1
 	}
+	fmt.Println(c.w)
 	c.getCookie()
 	h := http.Client{}
 	req, err := http.NewRequest("GET", "https://kb.chaoxing.com/pc/curriculum/getMyLessons"+"?week="+strconv.FormatInt(c.w, 10), nil)

@@ -188,6 +188,7 @@ func (p *Private) MessageDeal(s config.Messages, m string) {
 
 	if strings.Contains(s.Message, "元神启动") {
 		go p.class.SetTime()
+		return
 	}
 	//消息防撤回
 	if s.NoticeType == "friend_recall" && config.K.Mode.Recall {
