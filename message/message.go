@@ -98,23 +98,28 @@ func (b *GoBat) WriteMessage() {
 				if err != nil {
 					log.Println(err)
 				}
-				resp.Body.Close()
-				log.Println("发送成功")
-			}()
-			ctx := context.Background()
-			if config.Rdb.Exists(ctx, "num").Val() == 0 {
-				t1 := time.Now()
-				t2 := time.Date(t1.Year(), t1.Month(), t1.Day()+1, 0, 0, 0, 0, t1.Location())
-				fmt.Println(t2.Sub(t1))
-				_, err := config.Rdb.Set(ctx, "num", 1, t2.Sub(t1)).Result()
+				defer resp.Body.Close()
+				_, err = io.ReadAll(resp.Body)
 				if err != nil {
-					log.Println(err)
+					log.Println("消息发送错误", err)
+					return
 				}
-			}
-			result, err := config.Rdb.Incr(ctx, "num").Result()
-			if err != nil {
-				log.Println(result, err)
-			}
+				log.Println("发送成功")
+				ctx := context.Background()
+				if config.Rdb.Exists(ctx, "num").Val() == 0 {
+					t1 := time.Now()
+					t2 := time.Date(t1.Year(), t1.Month(), t1.Day()+1, 0, 0, 0, 0, t1.Location())
+					fmt.Println(t2.Sub(t1))
+					_, err := config.Rdb.Set(ctx, "num", 1, t2.Sub(t1)).Result()
+					if err != nil {
+						log.Println(err)
+					}
+				}
+				result, err := config.Rdb.Incr(ctx, "num").Result()
+				if err != nil {
+					log.Println(result, err)
+				}
+			}()
 
 		}
 	}

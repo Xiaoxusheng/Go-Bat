@@ -66,13 +66,13 @@
 
 ##### 1. 直接运行
 
-```go
+```txt
 go run main.go 
 ```
 
 ##### 2. 打包为二进制文件 ,运行二进制文件
 
-```go
+```txt
  go build -o GoBat -ldflags "-s -w"
 ./GoBat   enter运行
 ```

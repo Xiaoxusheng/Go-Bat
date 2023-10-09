@@ -41,33 +41,36 @@ func (c *ChatGpt) GetMessage(message string) string {
 	d.Messages[len(d.Messages)-1].Content = message
 	m, err := json.Marshal(d)
 	if err != nil {
-		return ""
+		return err.Error()
 	}
 	res, err := http.NewRequest(http.MethodPost, "https://api.chatanywhere.com.cn/v1/chat/completions", strings.NewReader(string(m)))
 	if err != nil {
 		log.Println(err)
-		return ""
+		return err.Error()
 	}
 	res.Header.Set("Content-Type", "application/json")
 	res.Header.Set("Authorization", "Bearer "+config.K.Mode.Key)
-	client := &http.Client{}
+	client := &http.Client{
+		Timeout: time.Second * 5,
+	}
 	resp, err := client.Do(res)
 	if err != nil {
 		log.Println(err)
-		return ""
+		return strings.ReplaceAll(err.Error(), "https://api.chatanywhere.com.cn/v1/chat/completions", " ")
 	}
 	defer resp.Body.Close()
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Println(err)
-		return ""
+		return err.Error()
 	}
 	cj := new(config.Cj)
 	err = json.Unmarshal(b, cj)
 	if err != nil {
-		return ""
+		fmt.Println(err)
+		return err.Error()
 	}
-	fmt.Println(string(b), cj.Choices[0].Message.Content, "hhhhhh", d.Messages)
+	fmt.Println(cj.Model, cj.Choices[0].Message.Content, "hhhhhh", d.Messages)
 	//最多记录5条上下文记录
 	if len(d.Messages) > 5 {
 		d.Messages = []struct {
@@ -113,7 +116,7 @@ func (c *ChatGpt) GetMessage(message string) string {
 //
 //}
 
-// //限制
+// 限制
 func (c *ChatGpt) Limit(s config.Messages) string {
 	ctx := context.Background()
 	id := s.UserId

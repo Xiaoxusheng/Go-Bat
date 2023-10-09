@@ -31,7 +31,7 @@ func (c *class) getCookie() {
 func (c *class) GetClass() string {
 	//c.w不存在时，默认为当前周
 	if c.w == 0 {
-		c.w = int64(math.Ceil(float64((time.Now().Unix()-time.Date(time.Now().Year(), 9, 1, 0, 0, 0, 0, time.Local).Unix())/(7*60*60*24)))) + 1
+		c.w = int64(math.Ceil(float64((time.Now().Unix()-time.Date(time.Now().Year(), 9, 4, 0, 0, 0, 0, time.Local).Unix())/(7*60*60*24)))) + 1
 		fmt.Println(c.w)
 	}
 	if c.w > 10 {

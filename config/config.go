@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 	"log"
 )
@@ -73,7 +72,7 @@ type Config struct {
 		PoolSize int
 	}
 	Mode struct {
-		Mode    string
+		Modes   string
 		Bat     bool
 		Recall  bool
 		Chatgpt bool
@@ -191,26 +190,12 @@ var K = Config{}
 
 func init() {
 	// 创建一个 Logger 对象，同时输出到文件和控制台
-	fmt.Println("                   _ooOoo_")
-	fmt.Println("                  o8888888o")
-	fmt.Println("                  88\" . \"88")
-	fmt.Println("                  (| -_- |)")
-	fmt.Println("                  O\\  =  /O")
-	fmt.Println("               ____/`---'\\____")
-	fmt.Println("             .'  \\\\|     |//  `.")
-	fmt.Println("            /  \\\\|||  :  |||//  \\")
-	fmt.Println("           /  _||||| -:- |||||-  \\")
-	fmt.Println("           |   | \\\\\\  -  /// |   |")
-	fmt.Println("           | \\_|  ''\\---/''  |   |")
-	fmt.Println("           \\  .-\\__  `-`  ___/-. /")
-	fmt.Println("         ___`. .'  /--.--\\  `. . __")
-	fmt.Println("      .\"\" '<  `.___\\_<|>_/___.'  >'\"\".")
-	fmt.Println("     | | :  `- \\`.;`\\ _ /`;.`/ - ` : | |")
-	fmt.Println("     \\  \\ `-.   \\_ __\\ /__ _/   .-` /  /")
-	fmt.Println("======`-.____`-.___\\_____/___.-`____.-'======")
-	fmt.Println("                   `=---='")
-	fmt.Println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-	fmt.Println("             佛祖保佑       永无BUG")
+	fmt.Println("     __________  ____  ___  ______")
+	fmt.Println("    / ____/ __ \\/ __ )/   |/_  __/")
+	fmt.Println("   / / __/ / / / __  / /| | / /   ")
+	fmt.Println("  / /_/ / /_/ / /_/ / ___ |/ /    ")
+	fmt.Println("  \\____/\\____/_____/_/  |_/_/     ")
+	fmt.Println("                                  ")
 	fmt.Println("[github地址]:https://github.com/Xiaoxusheng/Go-Bat")
 	log.SetPrefix("[Go-Bat]-------")
 	viper.SetConfigFile("config.yaml")
@@ -218,24 +203,21 @@ func init() {
 	if err != nil {
 		log.Println(err)
 	}
+	err = viper.Unmarshal(&K)
 	viper.SetDefault("server.port", 5000)
 	viper.SetDefault("server.ws", 5700)
 	viper.SetDefault("redis.addr", "127.0.0.1:6379")
-	viper.SetDefault("mode.mode", "T")
+	viper.SetDefault("mode.modes", "T")
 	viper.SetDefault("mode.key", "sk-H2Ea8g7of8MmOeu402a14ULPWuhijzH9zkGEq3KBXDdhEfeb")
 	viper.SetDefault("redis.poolSize", 1000)
 	viper.SetDefault("redis.db", 0)
-	viper.SetDefault("redis.password", "admin")
+	viper.SetDefault("redis.password", "admin123")
 	viper.SetDefault("mode.bat", false)
 	viper.SetDefault("mode.recall", true)
 	viper.SetDefault("mode.chatgpt", true)
 	viper.SetDefault("chaoXing.name", "19888340365")
-	viper.SetDefault("chaoXing.password", "admin123")
-	//viper.SetDefault("bat.qq", 3096407768)
-
-	err = viper.Unmarshal(&K, func(config *mapstructure.DecoderConfig) {
-
-	})
+	viper.SetDefault("chaoXing.password", "lei125608")
+	viper.SetDefault("bat.qq", 3096407768)
 	log.Println(K)
 	if err != nil {
 		log.Println("初始化失败")
