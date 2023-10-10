@@ -28,7 +28,6 @@ func (p *Picture) CreatePicture(strs string) {
 		//不存在
 		width := 1960
 		height := 1080
-		fmt.Println(times)
 		dc := gg.NewContext(width, height)
 		dc.SetHexColor("#B3C890")
 		dc.DrawRectangle(0, 0, float64(width), float64(height))
@@ -94,7 +93,7 @@ func (p *Picture) CreatePicture(strs string) {
 		dc.SetColor(color.RGBA{249, 251, 231, 150})
 		dc.SetFontFace(f)
 
-		rand.Seed(time.Now().UnixMicro())
+		rand.NewSource(time.Now().UnixMicro())
 		for i := 0; i < 10; i++ {
 			fmt.Println()
 			dc.Push()
@@ -113,24 +112,29 @@ func (p *Picture) CreatePicture(strs string) {
 			var h float64
 			var w float64
 			for i, r := range str {
+				//获取每个字符长度
 				w, h = dc.MeasureString(string(r))
+
 				wd, _ := dc.MeasureString(str[i:])
 				width += w
+				//要写入图片的字符串
 				s += string(r)
+				//如果w大于一行写入list
 				if width >= 1900 {
 					list = append(list, s)
 					width = 0
 					s = ""
 				}
-
+				//如果剩余的字符小于一行的长度,且最后的i来到 也写入list
 				// (i == len(str)-3 && !unicode.IsLetter(rune(str[i : i+1][0])))意思为当i-3时如果不是中文继续写入，是中文才添加到列表中
 				//(i == len(str)-3 && !unicode.IsSymbol(rune(str[i : i+1][0])))意思为当i-3时如果不是字符=这种继续写入，是中文才添加到列表中
 				if wd < 1800 && (i == len(str)-3 && !unicode.IsLetter(rune(str[i : i+1][0])) && !unicode.IsSymbol(rune(str[i : i+1][0])) && !unicode.IsNumber(rune(str[i : i+1][0])) && !unicode.IsSpace(rune(str[i : i+1][0]))) || i == len(str)-1 {
-					fmt.Println(i, len(str), s, unicode.IsLetter(rune(str[i : i+1][0])), unicode.IsSymbol(rune(str[i : i+1][0])), unicode.IsSpace(rune(str[i : i+1][0])), str[i:i+1])
+					//fmt.Println(i, len(str), s, unicode.IsLetter(rune(str[i : i+1][0])), unicode.IsSymbol(rune(str[i : i+1][0])), unicode.IsSpace(rune(str[i : i+1][0])), str[i:i+1])
 					list = append(list, s)
 				}
 
 			}
+			//写入图片
 			for i, s := range list {
 				if i == 0 {
 					dc.DrawString(s, 40, 80+float64(i)*h)

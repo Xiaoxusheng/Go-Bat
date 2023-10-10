@@ -146,7 +146,7 @@ func SendEmail(v6, v4 string) {
 		"  <span class=\"ipv4\">" + v4 + "</span>\n      " +
 		"  </div>\n    </div>\n</body>\n</html> ")
 
-	err := e.SendWithStartTLS("smtp.qq.com:587", smtp.PlainAuth("", "2673893724@qq.com", "myucgbfyfcnodjch", "smtp.qq.com"), &tls.Config{InsecureSkipVerify: true, ServerName: "smtp.gmail.com:465"})
+	err := e.SendWithStartTLS("smtp.qq.com:587", smtp.PlainAuth("", "", "", "smtp.qq.com"), &tls.Config{InsecureSkipVerify: true, ServerName: "smtp.gmail.com:465"})
 	if err != nil {
 		log.Println("stmp:", err)
 
