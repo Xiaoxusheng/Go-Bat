@@ -215,7 +215,7 @@ func (p *Private) MessageDeal(s config.Messages, m string) {
 			message.Message = err
 			return
 		}
-		message.Message = p.chatGpt.GetMessage(s.Message)
+		message.Message = p.chatGpt.GetMessage(s.UserId, s.Message)
 	}
 
 	if m == "t" {
