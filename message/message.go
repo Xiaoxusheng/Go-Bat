@@ -64,15 +64,20 @@ func (b *GoBat) ReadMessage() {
 	//读取管道消息
 	ctx := NewZBat()
 	ctx.Tactics()
-	for {
-		select {
-		case c := <-config.MessageChan:
-			//已读消息
-			config.ReadChan <- c.MessageId
-			ctx.Deal(c)
-			// 如果MessageChan成功读到数据，则进行该case处理语句
-			log.Println("收到Mess", c, "\n", "还剩", 100-len(config.MessageChan), c.MessageId)
-		}
+
+	for i := 0; i < 3; i++ {
+		go func() {
+			for {
+				select {
+				case c := <-config.MessageChan:
+					//已读消息
+					config.ReadChan <- c.MessageId
+					ctx.Deal(c)
+					// 如果MessageChan成功读到数据，则进行该case处理语句
+					log.Println("收到Mess", c, "\n", "还剩", 100-len(config.MessageChan), c.MessageId)
+				}
+			}
+		}()
 	}
 }
 
@@ -86,7 +91,7 @@ func (b *GoBat) WriteMessage() {
 				c.MessageType = "private"
 			}
 			log.Println("读取到数据", c.Message)
-
+			//简单维护10个go线程池，用来发送消息，避免创建多个goroutine大量内存资源
 			go func() {
 				log.Println("发送", c)
 				marshal, err := json.Marshal(c)
@@ -106,8 +111,10 @@ func (b *GoBat) WriteMessage() {
 				}
 				log.Println("发送成功")
 				ctx := context.Background()
+				//num不存在
 				if config.Rdb.Exists(ctx, "num").Val() == 0 {
 					t1 := time.Now()
+					//设置到期时间为次日0点
 					t2 := time.Date(t1.Year(), t1.Month(), t1.Day()+1, 0, 0, 0, 0, t1.Location())
 					fmt.Println(t2.Sub(t1))
 					_, err := config.Rdb.Set(ctx, "num", 1, t2.Sub(t1)).Result()
@@ -115,6 +122,7 @@ func (b *GoBat) WriteMessage() {
 						log.Println(err)
 					}
 				}
+				//+1
 				result, err := config.Rdb.Incr(ctx, "num").Result()
 				if err != nil {
 					log.Println(result, err)
