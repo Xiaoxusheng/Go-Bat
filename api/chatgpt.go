@@ -78,7 +78,12 @@ func (c *ChatGpt) GetMessage(id int64, message string) string {
 		log.Println(err)
 		return strings.ReplaceAll(err.Error(), "https://api.chatanywhere.com.cn/v1/chat/completions", " ")
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			return
+		}
+	}(resp.Body)
 	if resp.StatusCode == 429 {
 		return errors.New("使用超过限制").Error()
 	}
@@ -98,6 +103,11 @@ func (c *ChatGpt) GetMessage(id int64, message string) string {
 	fmt.Println(chat[id].Messages, len(chat[id].Messages), time.Now().Sub(chat[id].time) > 30)
 
 	if len(chat[id].Messages) > 6 || time.Now().Sub(chat[id].time).Minutes() > 30 {
+		//大于120分钟
+		if time.Now().Sub(chat[id].time).Minutes() > 120 {
+			//直接删除
+			delete(chat, id)
+		}
 		chat[id].Messages = []struct {
 			Role    string `json:"role,omitempty"`
 			Content string `json:"content,omitempty"`

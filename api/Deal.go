@@ -46,7 +46,7 @@ type Picture struct {
 	p config.Picture
 }
 
-// 文字
+// Controls 文字
 func (t *Text) Controls(s config.Messages) {
 	if s.MessageType == "private" || s.NoticeType != "" {
 		t.m = new(Private)
@@ -60,7 +60,7 @@ func (t *Text) Controls(s config.Messages) {
 	}
 }
 
-// 图片
+// Controls 图片
 func (p *Picture) Controls(s config.Messages) {
 	if s.MessageType == "private" || s.NoticeType == "friend_recall" {
 		p.m = new(Private)
@@ -95,7 +95,7 @@ func (p *Picture) Controls(s config.Messages) {
 
 }
 
-// 私聊
+// MessageDeal 私聊
 func (p *Private) MessageDeal(s config.Messages, m string) {
 	message := config.SendMessage{
 		UserId:      s.UserId,
@@ -233,7 +233,7 @@ func (p *Private) MessageDeal(s config.Messages, m string) {
 	config.PicterChan <- message
 }
 
-// 群聊
+// MessageDeal 群聊
 func (g *Group) MessageDeal(s config.Messages, m string) {
 	messages := config.SendMessage{
 		GroupId:     s.GroupId,
@@ -278,7 +278,7 @@ func (g *Group) MessageDeal(s config.Messages, m string) {
 	config.PicterChan <- messages
 }
 
-// 其他
+// MessageDeal 其他
 func (o *Other) MessageDeal(s config.Messages, m string) {
 	messages := config.SendMessage{
 		UserId:      s.UserId,
