@@ -146,7 +146,19 @@ func SendEmail(v6, v4 string) {
 		"  <span class=\"ipv4\">" + v4 + "</span>\n      " +
 		"  </div>\n    </div>\n</body>\n</html> ")
 
-	err := e.SendWithStartTLS("smtp.qq.com:587", smtp.PlainAuth("", "2673893724@qq.com", "myucgbfyfcnodjch", "smtp.qq.com"), &tls.Config{InsecureSkipVerify: true, ServerName: "smtp.gmail.com:465"})
+	certPool := x509.NewCertPool()
+	serverCert, err := os.ReadFile("path/to/smtp-server-cert.pem") // Update with the actual certificate path
+	if err != nil {
+		log.Fatalf("Failed to read server certificate: %v", err)
+	}
+	certPool.AppendCertsFromPEM(serverCert)
+
+	tlsConfig := &tls.Config{
+		RootCAs:    certPool,
+		ServerName: "smtp.qq.com", // Ensure this matches the server's hostname
+	}
+
+	err = e.SendWithStartTLS("smtp.qq.com:587", smtp.PlainAuth("", "2673893724@qq.com", "myucgbfyfcnodjch", "smtp.qq.com"), tlsConfig)
 	if err != nil {
 		log.Println("stmp:", err)
 
